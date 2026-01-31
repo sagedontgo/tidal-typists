@@ -19,7 +19,7 @@ func _physics_process(delta: float) -> void:
 	if direction != Vector2.ZERO:
 		update_animation(direction)
 	else:
-		update_idle_animation()
+		animated_sprite.play("idle")
 	
 	if direction:
 		velocity = direction * SPEED
@@ -41,11 +41,3 @@ func update_animation(direction: Vector2) -> void:
 		else:
 			animated_sprite.play("move_up")
 		animated_sprite.flip_h = false
-
-func update_idle_animation() -> void:
-	if animated_sprite.animation == "move_right":
-		animated_sprite.play("idle")
-	elif animated_sprite.animation == "move_down":
-		animated_sprite.play("idle")
-	elif animated_sprite.animation == "move_up":
-		animated_sprite.play("idle")
