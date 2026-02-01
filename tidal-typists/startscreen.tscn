@@ -1,0 +1,42 @@
+[gd_scene format=3 uid="uid://sjan3eivecdw"]
+
+[ext_resource type="Texture2D" uid="uid://birylhn30nsck" path="res://Images/2d pixel background.png" id="1_8hh42"]
+
+[node name="Node2D" type="Node2D" unique_id=172668828]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1372222176]
+position = Vector2(672, 308)
+scale = Vector2(1.4394531, 1.4013672)
+texture = ExtResource("1_8hh42")
+
+[node name="Button" type="Button" parent="Sprite2D" unique_id=1860235496]
+offset_left = -136.16281
+offset_top = 236.91148
+offset_right = 165.34058
+offset_bottom = 323.6126
+theme_override_font_sizes/font_size = 20
+text = "START"
+
+[node name="Button2" type="Button" parent="Sprite2D" unique_id=140113426]
+offset_left = 213.97015
+offset_top = 236.9115
+offset_right = 493.9377
+offset_bottom = 322.54218
+theme_override_font_sizes/font_size = 20
+text = "SETTING"
+
+[node name="Button3" type="Button" parent="Sprite2D" unique_id=204249864]
+offset_left = -359.51154
+offset_top = -390.6899
+offset_right = 342.14392
+offset_bottom = -216.0669
+theme_override_font_sizes/font_size = 31
+text = "GAME NAME"
+
+[node name="Button4" type="Button" parent="Sprite2D" unique_id=1262108747]
+offset_left = -466.84393
+offset_top = 236.91151
+offset_right = -171.5929
+offset_bottom = 323.25574
+theme_override_font_sizes/font_size = 20
+text = "SOMETHING"
