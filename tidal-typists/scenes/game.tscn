@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://bscfmqhblkamj" path="res://scenes/player.tscn" id="1_uwrxv"]
 [ext_resource type="PackedScene" uid="uid://n8r3fs1np7yu" path="res://scenes/cursor.tscn" id="2_lnu2h"]
 [ext_resource type="Texture2D" uid="uid://cod6ppkby6116" path="res://assets/map/tiles.png" id="2_yqjtg"]
+[ext_resource type="PackedScene" uid="uid://drm0ljm7eq57t" path="res://scenes/hud.tscn" id="4_lbhrr"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lnu2h"]
 resource_name = "tiles"
@@ -485,3 +486,5 @@ position = Vector2(145, -76)
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D" unique_id=510869600]
 position = Vector2(0, -4)
 zoom = Vector2(6, 6)
+
+[node name="HUD" parent="." unique_id=572454751 instance=ExtResource("4_lbhrr")]
