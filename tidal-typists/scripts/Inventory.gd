@@ -183,13 +183,3 @@ func _on_slot_clicked(slot_index: int, item) -> void:
 	else:
 		_update_held_visual()
 	
-func _input(event):
-	if event is InputEventKey and event.is_pressed() and not event.echo:
-		if event.is_action_pressed("ui_accept"):
-			add_item("Potion")
-		elif event.is_action_pressed("ui_cancel"):
-			# remove last filled slot
-			for i in range(_items.size() - 1, -1, -1):
-				if _items[i] != null:
-					clear_slot(i)
-					break
