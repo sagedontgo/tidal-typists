@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://sjan3eivecdw"]
+
+[ext_resource type="Texture2D" uid="uid://birylhn30nsck" path="res://Images/2d pixel background.png" id="1_8hh42"]
+
+[node name="Control" type="Control" unique_id=2019346187]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=263655733]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="HBoxContainer" unique_id=1372222176]
+position = Vector2(1113, 716.00006)
+scale = Vector2(1.4394531, 1.4013672)
+texture = ExtResource("1_8hh42")
+
+[node name="Button" type="Button" parent="HBoxContainer/Sprite2D" unique_id=1860235496]
+offset_left = -136.16281
+offset_top = 236.91148
+offset_right = 165.34058
+offset_bottom = 323.6126
+theme_override_font_sizes/font_size = 20
+text = "START"
+
+[node name="Button2" type="Button" parent="HBoxContainer/Sprite2D" unique_id=140113426]
+offset_left = 213.97015
+offset_top = 236.9115
+offset_right = 493.9377
+offset_bottom = 322.54218
+theme_override_font_sizes/font_size = 20
+text = "SETTING"
+
+[node name="Label" type="Label" parent="HBoxContainer/Sprite2D" unique_id=142947484]
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -1089.6499
+offset_top = -343.23624
+offset_right = -408.64993
+offset_bottom = -206.23624
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 100
+text = "TIDAL TYPISTS"
+
+[node name="Button4" type="Button" parent="HBoxContainer/Sprite2D" unique_id=1262108747]
+offset_left = -466.84393
+offset_top = 236.91151
+offset_right = -171.5929
+offset_bottom = 323.25574
+theme_override_font_sizes/font_size = 20
+text = "SOMETHING"
+metadata/_edit_use_anchors_ = true
