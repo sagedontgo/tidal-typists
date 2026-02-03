@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://sjan3eivecdw"]
 
 [ext_resource type="Texture2D" uid="uid://birylhn30nsck" path="res://Images/2d pixel background.png" id="1_8hh42"]
+[ext_resource type="Script" uid="uid://2p6mc5dq0s5n" path="res://scripts/start_menu.gd" id="2_m1yxm"]
 
 [node name="Control" type="Control" unique_id=2019346187]
 layout_mode = 3
@@ -39,7 +40,7 @@ theme_override_font_sizes/font_size = 20
 text = "SETTING"
 
 [node name="Label" type="Label" parent="HBoxContainer/Sprite2D" unique_id=142947484]
-anchors_preset = -1
+anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -1089.6499
@@ -57,5 +58,23 @@ offset_top = 236.91151
 offset_right = -171.5929
 offset_bottom = 323.25574
 theme_override_font_sizes/font_size = 20
-text = "SOMETHING"
+text = "NEW GAME"
 metadata/_edit_use_anchors_ = true
+
+[node name="Button3" type="Button" parent="HBoxContainer/Sprite2D" unique_id=829848210]
+offset_right = 8.0
+offset_bottom = 8.0
+text = "CUSTOMIZE"
+
+[node name="Button5" type="Button" parent="HBoxContainer/Sprite2D" unique_id=1941845876]
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="StartMenu" type="Control" parent="." unique_id=976508597]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("2_m1yxm")
+
+[connection signal="pressed" from="HBoxContainer/Sprite2D/Button4" to="StartMenu" method="_on_button_4_pressed"]
+[connection signal="pressed" from="HBoxContainer/Sprite2D/Button3" to="StartMenu" method="_on_button_3_pressed"]
