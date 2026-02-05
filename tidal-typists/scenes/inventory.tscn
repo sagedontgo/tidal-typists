@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://c40cjxyw2c7v4"]
+
+[ext_resource type="Script" uid="uid://coen3gfmhlrf" path="res://scripts/Inventory.gd" id="1_hj2ta"]
+[ext_resource type="Script" uid="uid://ppp3r156q7oo" path="res://scripts/Slot.gd" id="2_ty45s"]
+
+[node name="Inventory" type="Panel" unique_id=1548145143]
+offset_left = 256.0
+offset_top = 64.0
+offset_right = 888.0
+offset_bottom = 493.0
+script = ExtResource("1_hj2ta")
+
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1962668784]
+layout_mode = 0
+offset_right = 629.0
+offset_bottom = 435.0
+
+[node name="SlotContainer" type="GridContainer" parent="MarginContainer" unique_id=1164024649]
+layout_mode = 2
+
+[node name="Slot1" type="Button" parent="MarginContainer/SlotContainer" unique_id=225259610]
+custom_minimum_size = Vector2(30, 30)
+layout_direction = 3
+layout_mode = 2
+script = ExtResource("2_ty45s")
+
+[node name="Slot2" type="Button" parent="MarginContainer/SlotContainer" unique_id=1807805443]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+script = ExtResource("2_ty45s")
+
+[node name="Slot3" type="Button" parent="MarginContainer/SlotContainer" unique_id=998627226]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+script = ExtResource("2_ty45s")
+
+[node name="Slot4" type="Button" parent="MarginContainer/SlotContainer" unique_id=2062827375]
+custom_minimum_size = Vector2(30, 30)
+layout_mode = 2
+script = ExtResource("2_ty45s")
