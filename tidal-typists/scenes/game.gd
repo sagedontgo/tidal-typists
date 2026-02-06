@@ -46,12 +46,12 @@ func _on_hotbar_slot_changed(slot_index: int):
 	
 	var item = hotbar.get_item(slot_index)
 	if item != null:
-		var name = item if item is String else (item.get("name", "Unknown") if item is Dictionary else "Unknown")
-		print("🎯 Selected slot ", slot_index + 1, ": ", name)
+		var itemName = item if item is String else (item.get("itemName", "Unknown") if item is Dictionary else "Unknown")
+		print("🎯 Selected slot ", slot_index + 1, ": ", itemName)
 
 func _on_hotbar_item_used(slot_index: int, item):
 	if item == null:
 		return
 	
-	var name = item if item is String else (item.get("name", "Unknown") if item is Dictionary else "Unknown")
-	print("⚡ Used ", name, " from slot ", slot_index + 1)
+	var itemName = item if item is String else (item.get("itemName", "Unknown") if item is Dictionary else "Unknown")
+	print("⚡ Used ", itemName, " from slot ", slot_index + 1)

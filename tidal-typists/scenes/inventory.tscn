@@ -3,38 +3,53 @@
 [ext_resource type="Script" uid="uid://coen3gfmhlrf" path="res://scripts/Inventory.gd" id="1_hj2ta"]
 [ext_resource type="Script" uid="uid://ppp3r156q7oo" path="res://scripts/Slot.gd" id="2_ty45s"]
 
-[node name="Inventory" type="Panel" unique_id=1548145143]
-offset_left = 256.0
-offset_top = 64.0
-offset_right = 888.0
-offset_bottom = 493.0
+[node name="Control" type="Control" unique_id=1808077272]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Inventory" type="Panel" parent="." unique_id=1548145143]
+layout_mode = 0
+offset_left = -551.0
+offset_top = -303.0
+offset_right = 81.0
+offset_bottom = 126.0
 script = ExtResource("1_hj2ta")
 
-[node name="MarginContainer" type="MarginContainer" parent="." unique_id=1962668784]
+[node name="MarginContainer" type="MarginContainer" parent="Inventory" unique_id=1962668784]
 layout_mode = 0
 offset_right = 629.0
 offset_bottom = 435.0
 
-[node name="SlotContainer" type="GridContainer" parent="MarginContainer" unique_id=1164024649]
+[node name="SlotContainer" type="GridContainer" parent="Inventory/MarginContainer" unique_id=1164024649]
 layout_mode = 2
 
-[node name="Slot1" type="Button" parent="MarginContainer/SlotContainer" unique_id=225259610]
+[node name="Slot1" type="Button" parent="Inventory/MarginContainer/SlotContainer" unique_id=225259610]
 custom_minimum_size = Vector2(30, 30)
 layout_direction = 3
 layout_mode = 2
 script = ExtResource("2_ty45s")
 
-[node name="Slot2" type="Button" parent="MarginContainer/SlotContainer" unique_id=1807805443]
+[node name="Slot2" type="Button" parent="Inventory/MarginContainer/SlotContainer" unique_id=1807805443]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 script = ExtResource("2_ty45s")
 
-[node name="Slot3" type="Button" parent="MarginContainer/SlotContainer" unique_id=998627226]
+[node name="Slot3" type="Button" parent="Inventory/MarginContainer/SlotContainer" unique_id=998627226]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 script = ExtResource("2_ty45s")
 
-[node name="Slot4" type="Button" parent="MarginContainer/SlotContainer" unique_id=2062827375]
+[node name="Slot4" type="Button" parent="Inventory/MarginContainer/SlotContainer" unique_id=2062827375]
 custom_minimum_size = Vector2(30, 30)
 layout_mode = 2
 script = ExtResource("2_ty45s")

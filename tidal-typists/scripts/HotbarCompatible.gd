@@ -24,7 +24,6 @@ func _ready() -> void:
 	# Example items for testing
 	add_item("Basic Rod")
 	add_item("Bait")
-	
 	print("Hotbar ready with ", _slots.size(), " slots")
 
 func _input(event: InputEvent) -> void:
@@ -181,6 +180,7 @@ func _update_slot(slot_index: int) -> void:
 # This is called by the slot when clicked (just like inventory)
 func _on_slot_pressed(slot_index: int) -> void:
 	# First, select the slot
+	
 	select_slot(slot_index)
 	
 	# If we have a main_inventory reference and it has a held item,

@@ -493,5 +493,14 @@ zoom = Vector2(6, 6)
 [node name="HUD" type="CanvasLayer" parent="." unique_id=573467432]
 
 [node name="Inventory" parent="HUD" unique_id=1548145143 instance=ExtResource("7_u5sy4")]
+offset_left = 241.0
+offset_top = 48.0
+offset_right = 281.0
+offset_bottom = 88.0
 
 [node name="Hotbar" parent="HUD" unique_id=1417792194 instance=ExtResource("6_p57ef")]
+anchors_preset = 7
+offset_left = -321.0
+offset_top = -91.0
+offset_right = -281.0
+offset_bottom = -12.0
