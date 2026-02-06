@@ -85,18 +85,6 @@ func load_fish_sprite() -> void:
 	else:
 		print("No sprite_path in current_fish")
 
-func load_fish_sprite() -> void:
-	if GlobalData.current_fish.has("sprite_path"):
-		print("Loading sprite from: ", GlobalData.current_fish["sprite_path"])
-		var texture = load(GlobalData.current_fish["sprite_path"])
-		if texture:
-			print("Texture loaded successfully")
-			fish_sprite.texture = texture
-		else:
-			print("Failed to load texture")
-	else:
-		print("No sprite_path in current_fish")
-
 func update_ui() -> void:
 	if GlobalData.current_fish.is_empty():
 		GlobalData.current_fish = GlobalData.roll_random_fish()

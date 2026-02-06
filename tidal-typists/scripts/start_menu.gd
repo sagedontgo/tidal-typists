@@ -132,10 +132,21 @@ func _on_new_game_setup_cancelled() -> void:
 		(main_ui as CanvasItem).visible = true
 
 func _on_new_game_setup_submitted(nickname: String, gender: String) -> void:
-	# For now: stash it on the running game scene so you can read it later.
+	# Store in GlobalData for easy access
+	GlobalData.player_nickname = nickname
+	GlobalData.player_gender = gender
+	
+	# Also stash it on the running game scene for backwards compatibility
 	var cs := get_tree().current_scene
 	if cs != null:
 		cs.set_meta("player_nickname", nickname)
 		cs.set_meta("player_gender", gender)
+		
+		# Find and update the player's nickname label
+		var player = cs.get_node_or_null("Player")
+		if player != null:
+			var nickname_label = player.get_node_or_null("NicknameLabel")
+			if nickname_label != null:
+				nickname_label.text = nickname
 
 	_close_menu_and_resume()

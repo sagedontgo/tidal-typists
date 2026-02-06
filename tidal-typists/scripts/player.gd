@@ -3,6 +3,7 @@ extends CharacterBody2D
 const SPEED = 100.0
 
 @onready var animated_sprite = $AnimatedSprite2D
+@onready var nickname_label = $NicknameLabel
 
 var can_move = true
 
@@ -11,6 +12,12 @@ func _ready() -> void:
 	var gd := get_node_or_null("/root/GlobalData")
 	if gd != null and bool(gd.get("has_saved_player_position")):
 		global_position = gd.get("saved_player_position")
+	
+	# Update nickname display
+	if gd != null and gd.get("player_nickname") != "":
+		nickname_label.text = gd.get("player_nickname")
+	else:
+		nickname_label.text = "Player"
 
 func _physics_process(_delta: float) -> void:
 	if not can_move:
