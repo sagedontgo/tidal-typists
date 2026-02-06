@@ -25,19 +25,11 @@ position = Vector2(572.25006, 321.25003)
 scale = Vector2(0.7353516, 0.63037103)
 texture = ExtResource("1_8hh42")
 
-[node name="Button" type="Button" parent="HBoxContainer/Sprite2D" unique_id=1860235496]
-offset_left = -136.16281
-offset_top = 236.91148
-offset_right = 165.34058
-offset_bottom = 323.6126
-theme_override_font_sizes/font_size = 20
-text = "START"
-
 [node name="Button2" type="Button" parent="HBoxContainer/Sprite2D" unique_id=140113426]
-offset_left = 213.97015
-offset_top = 236.9115
-offset_right = 493.9377
-offset_bottom = 322.54218
+offset_left = -122.7305
+offset_top = 359.70874
+offset_right = 157.23706
+offset_bottom = 445.33942
 theme_override_font_sizes/font_size = 20
 text = "SETTING"
 
@@ -55,18 +47,13 @@ theme_override_font_sizes/font_size = 100
 text = "TIDAL TYPISTS"
 
 [node name="Button4" type="Button" parent="HBoxContainer/Sprite2D" unique_id=1262108747]
-offset_left = -466.84393
-offset_top = 236.91151
-offset_right = -171.5929
-offset_bottom = 323.25574
+offset_left = -130.88985
+offset_top = 251.83575
+offset_right = 164.36119
+offset_bottom = 338.18
 theme_override_font_sizes/font_size = 20
 text = "NEW GAME"
 metadata/_edit_use_anchors_ = true
-
-[node name="Button3" type="Button" parent="HBoxContainer/Sprite2D" unique_id=829848210]
-offset_right = 8.0
-offset_bottom = 8.0
-text = "CUSTOMIZE"
 
 [node name="Button5" type="Button" parent="HBoxContainer/Sprite2D" unique_id=1941845876]
 offset_right = 8.0
@@ -79,4 +66,3 @@ offset_bottom = 40.0
 script = ExtResource("2_m1yxm")
 
 [connection signal="pressed" from="HBoxContainer/Sprite2D/Button4" to="StartMenu" method="_on_button_4_pressed"]
-[connection signal="pressed" from="HBoxContainer/Sprite2D/Button3" to="StartMenu" method="_on_button_3_pressed"]
