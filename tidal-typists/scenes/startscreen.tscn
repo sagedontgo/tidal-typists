@@ -1,13 +1,15 @@
 [gd_scene format=3 uid="uid://sjan3eivecdw"]
 
 [ext_resource type="Texture2D" uid="uid://birylhn30nsck" path="res://Images/2d pixel background.png" id="1_8hh42"]
-[ext_resource type="Script" uid="uid://2p6mc5dq0s5n" path="res://scripts/start_menu.gd" id="2_m1yxm"]
+[ext_resource type="Script" uid="uid://cx66crcncs6m3" path="res://scripts/start_menu.gd" id="2_m1yxm"]
 
-[node name="Control" type="Control" unique_id=2019346187]
+[node name="StartScreen" type="Control" unique_id=708417317]
 layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=263655733]
 layout_mode = 1
@@ -19,8 +21,8 @@ grow_vertical = 2
 theme_override_constants/separation = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="HBoxContainer" unique_id=1372222176]
-position = Vector2(1113, 716.00006)
-scale = Vector2(1.4394531, 1.4013672)
+position = Vector2(572.25006, 321.25003)
+scale = Vector2(0.7353516, 0.63037103)
 texture = ExtResource("1_8hh42")
 
 [node name="Button" type="Button" parent="HBoxContainer/Sprite2D" unique_id=1860235496]
