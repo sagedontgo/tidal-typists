@@ -52,7 +52,7 @@ offset_top = 251.83575
 offset_right = 164.36119
 offset_bottom = 338.18
 theme_override_font_sizes/font_size = 20
-text = "NEW GAME"
+text = "New Game"
 metadata/_edit_use_anchors_ = true
 
 [node name="Button5" type="Button" parent="HBoxContainer/Sprite2D" unique_id=1941845876]
