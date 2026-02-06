@@ -59,13 +59,17 @@ func _ready() -> void:
 	fight_button.pressed.connect(on_fight_pressed)
 	flee_button.pressed.connect(on_flee_pressed)
 	continue_button.pressed.connect(on_continue_pressed)
-	input_box.text_submitted.connect(on_text_submitted)
+	# Don't connect text_submitted - we'll handle Enter key manually
 
 	# Prevent Enter from accidentally "activating" a focused button.
 	# During combat we want typing input to own focus.
 	fight_button.focus_mode = Control.FOCUS_NONE
 	flee_button.focus_mode = Control.FOCUS_NONE
 	continue_button.focus_mode = Control.FOCUS_NONE
+	
+	# Ensure input box can receive focus
+	input_box.focus_mode = Control.FOCUS_ALL
+	input_box.editable = true
 
 func update_ui() -> void:
 	if _gd == null:
@@ -86,6 +90,15 @@ func on_fight_pressed() -> void:
 func on_flee_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/game.tscn")
 
+func _input(event: InputEvent) -> void:
+	# Handle Enter key manually during combat
+	if combat_ui.visible and event.is_action_pressed("ui_accept"):
+		if input_box and input_box.has_focus():
+			var text = input_box.text.strip_edges()
+			if text.length() > 0:
+				on_text_submitted(text)
+				get_viewport().set_input_as_handled()
+
 func _process(delta: float) -> void:
 	if is_prep_phase:
 		prep_timer += delta
@@ -105,7 +118,6 @@ func _process(delta: float) -> void:
 
 func start_combat() -> void:
 	combat_ui.visible = true
-	input_box.grab_focus()
 	
 	if _gd == null:
 		push_error("GlobalData autoload missing. Check Project Settings > Autoload.")
@@ -139,6 +151,8 @@ func start_combat() -> void:
 		words_to_type.append(word_dict[difficulty].pick_random())
 	
 	word_label.text = words_to_type[current_word_index]
+	input_box.text = ""
+	input_box.grab_focus()
 
 func on_text_submitted(text: String) -> void:
 	if current_word_index >= words_to_type.size():
@@ -148,12 +162,13 @@ func on_text_submitted(text: String) -> void:
 	calculate_accuracy(text, words_to_type[current_word_index])
 	
 	current_word_index += 1
-	input_box.clear()
 	
 	if current_word_index < words_to_type.size():
 		word_label.text = words_to_type[current_word_index]
-		input_box.grab_focus()
+		input_box.text = ""  # Clear text directly instead of using clear()
+		# Focus stays on input_box automatically since we handled the Enter key
 	else:
+		input_box.clear()
 		end_turn()
 
 func calculate_accuracy(typed: String, correct: String) -> void:
