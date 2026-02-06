@@ -6,6 +6,12 @@ const SPEED = 100.0
 
 var can_move = true
 
+func _ready() -> void:
+	# If we came back from combat, restore where we were.
+	var gd := get_node_or_null("/root/GlobalData")
+	if gd != null and bool(gd.get("has_saved_player_position")):
+		global_position = gd.get("saved_player_position")
+
 func _physics_process(_delta: float) -> void:
 	if not can_move:
 		velocity = Vector2.ZERO
@@ -48,5 +54,12 @@ func update_animation(direction: Vector2) -> void:
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
+		# Save our current position so returning from combat doesn't
+		# reset us to the scene's default spawn point.
+		var gd := get_node_or_null("/root/GlobalData")
+		if gd != null:
+			gd.set("has_saved_player_position", true)
+			gd.set("saved_player_position", global_position)
+
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		get_tree().change_scene_to_file("res://scenes/combat.tscn")

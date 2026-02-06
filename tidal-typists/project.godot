@@ -17,7 +17,7 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-GlobalData="*uid://c16ymyofsr3f4"
+GlobalData="*res://scripts/global_data.gd"
 
 [input]
 

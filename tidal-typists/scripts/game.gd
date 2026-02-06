@@ -34,6 +34,15 @@ func _ready() -> void:
 		print("❌ ERROR: Inventory not found!")
 		return
 	print("✅ Inventory found!")
+
+	if not (inventory is Inventory):
+		var inv_child: Node = inventory.find_child("Inventory", true, false)
+		if inv_child is Inventory:
+			inventory = inv_child
+			print("✅ Inventory script resolved from wrapper")
+		else:
+			print("❌ ERROR: Inventory script node not found under wrapper!")
+			return
 	
 	hotbar = hud.get_node_or_null("Hotbar")
 	if hotbar == null:
