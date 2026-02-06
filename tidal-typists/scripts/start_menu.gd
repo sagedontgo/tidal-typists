@@ -13,6 +13,20 @@ func _enter_tree() -> void:
 		get_parent().process_mode = Node.PROCESS_MODE_WHEN_PAUSED
 
 func _ready() -> void:
+	# If we're returning to `game.tscn` from another scene (combat),
+	# we don't want the start menu to reopen and pause the game.
+	var gd := get_node_or_null("/root/GlobalData")
+	if gd != null and bool(gd.get("has_started_game")):
+		# Ensure normal gameplay state, then remove the overlay.
+		get_tree().paused = false
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+		var root := get_parent()
+		if root != null:
+			root.queue_free()
+		else:
+			queue_free()
+		return
+
 	_connect_optional_buttons()
 	# Open/pause here (not _enter_tree) so it runs after other nodes' _ready().
 	# To prevent the in-game Cursor script from immediately hiding the mouse.
@@ -26,6 +40,12 @@ func _open_menu() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _close_menu_and_resume() -> void:
+	# Mark that the game has started this session so the menu doesn't reopen
+	# when we come back to `game.tscn` from other scenes (like combat).
+	var gd := get_node_or_null("/root/GlobalData")
+	if gd != null:
+		gd.set("has_started_game", true)
+
 	if _paused_by_menu:
 		get_tree().paused = false
 		_paused_by_menu = false

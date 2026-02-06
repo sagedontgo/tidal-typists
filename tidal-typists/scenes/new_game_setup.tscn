@@ -1,7 +1,7 @@
-[gd_scene format=3 uid="uid://b4qc1wy3pmd01"]
+[gd_scene format=3]
 
-[ext_resource type="Texture2D" uid="uid://birylhn30nsck" path="res://Images/2d pixel background.png" id="1_bg"]
-[ext_resource type="Script" uid="uid://d1newgamesetupscript" path="res://scripts/new_game_setup.gd" id="2_script"]
+[ext_resource type="Texture2D" path="res://Images/2d pixel background.png" id="1_bg"]
+[ext_resource type="Script" path="res://scripts/new_game_setup.gd" id="2_script"]
 
 [node name="NewGameSetup" type="Control"]
 anchors_preset = 15

@@ -19,6 +19,7 @@ extends Control
 @onready var result_label = $ResultUI/ResultLabel
 @onready var damage_label = $ResultUI/DamageLabel
 @onready var continue_button = $ResultUI/ContinueButton
+@onready var _gd: Node = get_node_or_null("/root/GlobalData")
 
 @export var easy_words: Array[String] = [
 	"the", "and", "cat", "dog", "sun", "boy", "run", "sit", "big", "hot"
@@ -46,6 +47,7 @@ var time_limit = 0.0
 var prep_time = 3.0
 var prep_timer = 0.0
 var is_prep_phase = false
+var _in_fish_attack := false
 
 func _ready() -> void:
 	update_ui()
@@ -59,11 +61,21 @@ func _ready() -> void:
 	continue_button.pressed.connect(on_continue_pressed)
 	input_box.text_submitted.connect(on_text_submitted)
 
+	# Prevent Enter from accidentally "activating" a focused button.
+	# During combat we want typing input to own focus.
+	fight_button.focus_mode = Control.FOCUS_NONE
+	flee_button.focus_mode = Control.FOCUS_NONE
+	continue_button.focus_mode = Control.FOCUS_NONE
+
 func update_ui() -> void:
-	rod_durability_label.text = "Rod: " + str(GlobalData.rod_durability) + "%"
-	fish_name_label.text = GlobalData.current_fish["name"]
-	fish_level_label.text = "Lv: " + str(GlobalData.current_fish["level"])
-	fish_health_label.text = "HP: " + str(GlobalData.current_fish["health"]) + "/" + str(GlobalData.current_fish["max_health"])
+	if _gd == null:
+		push_error("GlobalData autoload missing. Check Project Settings > Autoload.")
+		return
+	rod_durability_label.text = "Rod: " + str(_gd.get("rod_durability")) + "%"
+	var fish := _gd.get("current_fish") as Dictionary
+	fish_name_label.text = str(fish.get("name", "Unknown Fish"))
+	fish_level_label.text = "Lv: " + str(fish.get("level", 1))
+	fish_health_label.text = "HP: %s/%s" % [str(fish.get("health", 0)), str(fish.get("max_health", 0))]
 
 func on_fight_pressed() -> void:
 	choice_buttons.visible = false
@@ -95,7 +107,11 @@ func start_combat() -> void:
 	combat_ui.visible = true
 	input_box.grab_focus()
 	
-	var fish_level = GlobalData.current_fish["level"]
+	if _gd == null:
+		push_error("GlobalData autoload missing. Check Project Settings > Autoload.")
+		return
+	var fish := _gd.get("current_fish") as Dictionary
+	var fish_level: int = int(fish.get("level", 1))
 	var difficulty = "easy"
 	var word_count = 3
 	
@@ -133,10 +149,10 @@ func on_text_submitted(text: String) -> void:
 	
 	current_word_index += 1
 	input_box.clear()
-	input_box.grab_focus()
 	
 	if current_word_index < words_to_type.size():
 		word_label.text = words_to_type[current_word_index]
+		input_box.grab_focus()
 	else:
 		end_turn()
 
@@ -156,6 +172,10 @@ func calculate_accuracy(typed: String, correct: String) -> void:
 func end_turn() -> void:
 	combat_ui.visible = false
 	result_ui.visible = true
+	_in_fish_attack = false
+	# Player-result screen: Continue should be usable here.
+	continue_button.disabled = false
+	continue_button.visible = true
 	
 	var time_taken = Time.get_ticks_msec() / 1000.0 - start_time
 	var wpm = (typed_words.size() / time_taken) * 60.0
@@ -164,7 +184,10 @@ func end_turn() -> void:
 	var damage = 0
 	if accuracy >= 70:
 		damage = int(wpm * (accuracy / 100.0))
-		GlobalData.current_fish["health"] -= damage
+		if _gd != null:
+			var fish := _gd.get("current_fish") as Dictionary
+			fish["health"] = int(fish.get("health", 0)) - damage
+			_gd.set("current_fish", fish)
 		result_label.text = "Hit!"
 		damage_label.text = "Damage: " + str(damage) + "\nWPM: " + str(int(wpm)) + " | Accuracy: " + str(int(accuracy)) + "%"
 	else:
@@ -174,22 +197,39 @@ func end_turn() -> void:
 	update_ui()
 
 func on_continue_pressed() -> void:
+	# During fish attack phase, Continue must do nothing to prevent multi-hit bugs.
+	if _in_fish_attack:
+		return
+
 	result_ui.visible = false
 	
-	if GlobalData.current_fish["health"] <= 0:
+	if _gd == null:
+		get_tree().change_scene_to_file("res://scenes/game.tscn")
+		return
+	var fish := _gd.get("current_fish") as Dictionary
+	if int(fish.get("health", 0)) <= 0:
 		get_tree().change_scene_to_file("res://scenes/game.tscn")
 		return
 	
 	fish_turn()
 
 func fish_turn() -> void:
-	var fish_damage = randi_range(1, GlobalData.current_fish["max_damage"])
+	_in_fish_attack = true
+	# Fish-attack screen: hide/disable Continue to prevent multiple damage ticks.
+	continue_button.disabled = true
+	continue_button.visible = false
+
+	if _gd == null:
+		get_tree().change_scene_to_file("res://scenes/game.tscn")
+		return
+	var fish := _gd.get("current_fish") as Dictionary
+	var fish_damage = randi_range(1, int(fish.get("max_damage", 1)))
 	var time_taken = Time.get_ticks_msec() / 1000.0 - start_time
 	var wpm = (typed_words.size() / time_taken) * 60.0
 	var wpm_reduction = int(wpm * 0.1)
 	fish_damage = max(1, fish_damage - wpm_reduction)
 	
-	GlobalData.rod_durability -= fish_damage
+	_gd.set("rod_durability", int(_gd.get("rod_durability")) - fish_damage)
 	update_ui()
 	
 	result_ui.visible = true
@@ -199,7 +239,7 @@ func fish_turn() -> void:
 	await get_tree().create_timer(1.5).timeout
 	result_ui.visible = false
 	
-	if GlobalData.rod_durability <= 0:
+	if int(_gd.get("rod_durability")) <= 0:
 		get_tree().change_scene_to_file("res://scenes/game.tscn")
 	else:
 		start_combat()
