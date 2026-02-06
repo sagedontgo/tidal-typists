@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://drm0ljm7eq57t"]
+
+[ext_resource type="Script" uid="uid://bi15dxqgebeoj" path="res://scripts/map_view.gd" id="3_6fi6k"]
+[ext_resource type="Script" uid="uid://dpisecfvjdvbf" path="res://scripts/player_marker.gd" id="4_uo2fv"]
+
+[node name="HUD" type="CanvasLayer" unique_id=1366750442]
+
+[node name="MapView" type="Control" parent="." unique_id=1937915645]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("3_6fi6k")
+
+[node name="Background" type="ColorRect" parent="MapView" unique_id=1877918023]
+custom_minimum_size = Vector2(200, 200)
+layout_mode = 0
+offset_left = 8.0
+offset_top = 5.0
+offset_right = 208.0
+offset_bottom = 205.0
+color = Color(0.19793725, 0.19793722, 0.19793722, 1)
+
+[node name="PlayerMarker" type="Control" parent="MapView/Background" unique_id=1302151307]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("4_uo2fv")
+
+[node name="Visual" type="ColorRect" parent="MapView/Background/PlayerMarker" unique_id=590252692]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0.57116437, 0.15286982, 4.813075e-08, 1)

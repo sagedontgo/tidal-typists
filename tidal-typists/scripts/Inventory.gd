@@ -1,7 +1,9 @@
+class_name Inventory
 extends Panel
 
 signal slot_pressed(slot_index: int, item)
 
+@export var main_inventory: Inventory
 @onready var slot_container := $MarginContainer/SlotContainer
 
 var _slots: Array[Node] = []

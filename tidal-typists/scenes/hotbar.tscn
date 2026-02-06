@@ -4,10 +4,15 @@
 [ext_resource type="Script" uid="uid://ppp3r156q7oo" path="res://scripts/Slot.gd" id="2_xrqkv"]
 
 [node name="Hotbar" type="Panel" unique_id=1417792194]
-offset_left = 256.0
-offset_top = 544.0
-offset_right = 900.0
-offset_bottom = 623.0
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -256.0
+offset_top = -84.0
+offset_right = 379.0
+offset_bottom = -3.0
 script = ExtResource("1_4qkdb")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=122162868]
