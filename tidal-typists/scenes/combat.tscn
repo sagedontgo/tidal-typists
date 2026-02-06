@@ -60,11 +60,11 @@ offset_bottom = 20.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Label" type="Label" parent="CombatUI" unique_id=690458918]
+[node name="WordLabel" type="Label" parent="CombatUI" unique_id=690458918]
 layout_mode = 2
 text = "Words Words Words"
 
-[node name="LineEdit" type="LineEdit" parent="CombatUI" unique_id=996283175]
+[node name="InputBox" type="LineEdit" parent="CombatUI" unique_id=996283175]
 layout_mode = 2
 placeholder_text = "Words"
 context_menu_enabled = false
@@ -76,3 +76,80 @@ layout_mode = 2
 
 [node name="Timer" type="Timer" parent="CombatUI" unique_id=430203787]
 autostart = true
+
+[node name="PlayerInfo" type="VBoxContainer" parent="." unique_id=1582990921]
+layout_mode = 1
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PlayerLabel" type="Label" parent="PlayerInfo" unique_id=1532353463]
+layout_mode = 2
+text = "Player"
+
+[node name="RodDurabilityLabel" type="Label" parent="PlayerInfo" unique_id=1078522423]
+layout_mode = 2
+
+[node name="FishInfo" type="VBoxContainer" parent="." unique_id=2080636734]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 40.0
+grow_horizontal = 0
+
+[node name="FishNameLabel" type="Label" parent="FishInfo" unique_id=584041357]
+layout_mode = 2
+
+[node name="FishLevelLabel" type="Label" parent="FishInfo" unique_id=8916313]
+layout_mode = 2
+
+[node name="FishHealthLabel" type="Label" parent="FishInfo" unique_id=811145631]
+layout_mode = 2
+
+[node name="PrepTimer" type="VBoxContainer" parent="." unique_id=875465858]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -41.5
+offset_top = -20.0
+offset_right = 41.5
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PrepLabel" type="Label" parent="PrepTimer" unique_id=922000344]
+layout_mode = 2
+text = "Get Ready!"
+
+[node name="PrepTimerLabel" type="Label" parent="PrepTimer" unique_id=1462326123]
+layout_mode = 2
+
+[node name="ResultUI" type="VBoxContainer" parent="." unique_id=2141268645]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -39.5
+offset_top = -42.5
+offset_right = 39.5
+offset_bottom = 42.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ResultLabel" type="Label" parent="ResultUI" unique_id=1343042237]
+layout_mode = 2
+
+[node name="DamageLabel" type="Label" parent="ResultUI" unique_id=1450594929]
+layout_mode = 2
+
+[node name="ContinueButton" type="Button" parent="ResultUI" unique_id=375457061]
+layout_mode = 2
+text = "Continue"
