@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://c1e7sx3yc3jse"]
 
-[ext_resource type="Script" uid="uid://vl3sxoylpicp" path="res://scenes/game.gd" id="1_p57ef"]
+[ext_resource type="Script" uid="uid://vl3sxoylpicp" path="res://scripts/game.gd" id="1_p57ef"]
 [ext_resource type="PackedScene" uid="uid://bscfmqhblkamj" path="res://scenes/player.tscn" id="1_uwrxv"]
 [ext_resource type="PackedScene" uid="uid://n8r3fs1np7yu" path="res://scenes/cursor.tscn" id="2_lnu2h"]
 [ext_resource type="Texture2D" uid="uid://cod6ppkby6116" path="res://assets/map/tiles.png" id="2_yqjtg"]
@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://mre4faygt0rf" path="res://scenes/hotbar.tscn" id="6_p57ef"]
 [ext_resource type="PackedScene" uid="uid://c40cjxyw2c7v4" path="res://scenes/inventory.tscn" id="7_u5sy4"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lnu2h"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u5sy4"]
 resource_name = "tiles"
 texture = ExtResource("2_yqjtg")
 0:0/0 = 0
@@ -213,7 +213,7 @@ texture = ExtResource("3_u5sy4")
 1:2/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_lbhrr"]
-sources/0 = SubResource("TileSetAtlasSource_lnu2h")
+sources/0 = SubResource("TileSetAtlasSource_u5sy4")
 sources/1 = SubResource("TileSetAtlasSource_gee14")
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_yqjtg"]

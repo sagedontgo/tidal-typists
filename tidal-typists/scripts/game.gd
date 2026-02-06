@@ -97,20 +97,9 @@ func _process(delta: float) -> void:
 func catch_fish() -> void:
 	is_fishing = false
 	waiting_label.visible = false
+	player.can_move = true
 	
-	var fish_level = randi_range(1, 10)
-	var fish_names = ["Bass", "Trout", "Salmon", "Catfish", "Pike"]
-	var fish_name = fish_names[randi() % fish_names.size()]
-	var fish_health = fish_level * 20
-	var fish_max_damage = fish_level * 5
-	
-	GlobalData.current_fish = {
-		"name": fish_name,
-		"level": fish_level,
-		"health": fish_health,
-		"max_health": fish_health,
-		"max_damage": fish_max_damage
-	}
+	GlobalData.current_fish = GlobalData.roll_random_fish()
 	GlobalData.rod_durability = 100
 	
 	get_tree().change_scene_to_file("res://scenes/combat.tscn")

@@ -19,6 +19,7 @@ extends Control
 @onready var result_label = $ResultUI/ResultLabel
 @onready var damage_label = $ResultUI/DamageLabel
 @onready var continue_button = $ResultUI/ContinueButton
+@onready var fish_sprite = $HBoxContainer/Right/FishSprite
 
 @export var easy_words: Array[String] = [
 	"the", "and", "cat", "dog", "sun", "boy", "run", "sit", "big", "hot"
@@ -49,6 +50,7 @@ var is_prep_phase = false
 
 func _ready() -> void:
 	update_ui()
+	load_fish_sprite()
 	choice_buttons.visible = true
 	prep_timer_ui.visible = false
 	combat_ui.visible = false
@@ -59,9 +61,38 @@ func _ready() -> void:
 	continue_button.pressed.connect(on_continue_pressed)
 	input_box.text_submitted.connect(on_text_submitted)
 
+func load_fish_sprite() -> void:
+	if GlobalData.current_fish.has("sprite_path"):
+		print("Loading sprite from: ", GlobalData.current_fish["sprite_path"])
+		var texture = load(GlobalData.current_fish["sprite_path"])
+		if texture:
+			print("Texture loaded successfully")
+			fish_sprite.texture = texture
+		else:
+			print("Failed to load texture")
+	else:
+		print("No sprite_path in current_fish")
+
 func update_ui() -> void:
+	if GlobalData.current_fish.is_empty():
+		GlobalData.current_fish = GlobalData.roll_random_fish()
+		GlobalData.rod_durability = 100
+	
 	rod_durability_label.text = "Rod: " + str(GlobalData.rod_durability) + "%"
-	fish_name_label.text = GlobalData.current_fish["name"]
+	var rarity_color = ""
+	if GlobalData.current_fish.has("rarity"):
+		match GlobalData.current_fish["rarity"]:
+			"common":
+				rarity_color = "[color=gray]"
+			"uncommon":
+				rarity_color = "[color=green]"
+			"rare":
+				rarity_color = "[color=blue]"
+			"legendary":
+				rarity_color = "[color=gold]"
+	
+	fish_name_label.text = rarity_color + GlobalData.current_fish["name"] + "[/color]"
+	fish_name_label.bbcode_enabled = true
 	fish_level_label.text = "Lv: " + str(GlobalData.current_fish["level"])
 	fish_health_label.text = "HP: " + str(GlobalData.current_fish["health"]) + "/" + str(GlobalData.current_fish["max_health"])
 
@@ -69,7 +100,7 @@ func on_fight_pressed() -> void:
 	choice_buttons.visible = false
 	prep_timer_ui.visible = true
 	is_prep_phase = true
-	prep_timer = 0.0
+	prep_timer = 0.0	
 
 func on_flee_pressed() -> void:
 	get_tree().change_scene_to_file("res://scenes/game.tscn")

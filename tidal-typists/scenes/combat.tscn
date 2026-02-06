@@ -30,6 +30,21 @@ layout_mode = 2
 size_flags_horizontal = 3
 color = Color(0.71, 0, 0.011833153, 1)
 
+[node name="FishSprite" type="TextureRect" parent="HBoxContainer/Right" unique_id=897568758]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch_mode = 5
+
 [node name="ChoiceButtons" type="VBoxContainer" parent="." unique_id=1061261523]
 layout_mode = 0
 offset_left = 486.0
@@ -98,8 +113,9 @@ offset_left = -40.0
 offset_bottom = 40.0
 grow_horizontal = 0
 
-[node name="FishNameLabel" type="Label" parent="FishInfo" unique_id=584041357]
+[node name="FishNameLabel" type="RichTextLabel" parent="FishInfo" unique_id=202100427]
 layout_mode = 2
+bbcode_enabled = true
 
 [node name="FishLevelLabel" type="Label" parent="FishInfo" unique_id=8916313]
 layout_mode = 2
