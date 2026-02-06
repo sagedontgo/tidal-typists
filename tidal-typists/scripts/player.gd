@@ -4,7 +4,14 @@ const SPEED = 100.0
 
 @onready var animated_sprite = $AnimatedSprite2D
 
+var can_move = true
+
 func _physics_process(_delta: float) -> void:
+	if not can_move:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+	
 	var direction := Vector2.ZERO
 	
 	if Input.is_action_pressed("ui_up"):
@@ -31,16 +38,13 @@ func _physics_process(_delta: float) -> void:
 func update_animation(direction: Vector2) -> void:
 	if abs(direction.x) > abs(direction.y):
 		animated_sprite.play("move_right")
-		if direction.x < 0:
-			animated_sprite.flip_h = true
-		else:
-			animated_sprite.flip_h = false
+		animated_sprite.flip_h = direction.x < 0
 	else:
+		animated_sprite.flip_h = false
 		if direction.y > 0:
 			animated_sprite.play("move_down")
 		else:
 			animated_sprite.play("move_up")
-		animated_sprite.flip_h = false
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept"):
