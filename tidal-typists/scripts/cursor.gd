@@ -3,7 +3,7 @@ extends Sprite2D
 const GRID_SIZE = 16
 
 func _ready() -> void:
-	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
 func _process(_delta: float) -> void:
 	var mouse_pos = get_global_mouse_position()

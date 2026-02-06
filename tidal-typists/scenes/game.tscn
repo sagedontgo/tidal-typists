@@ -1,10 +1,11 @@
 [gd_scene format=4 uid="uid://c1e7sx3yc3jse"]
 
+[ext_resource type="Script" uid="uid://vl3sxoylpicp" path="res://scenes/game.gd" id="1_p57ef"]
 [ext_resource type="PackedScene" uid="uid://bscfmqhblkamj" path="res://scenes/player.tscn" id="1_uwrxv"]
 [ext_resource type="PackedScene" uid="uid://n8r3fs1np7yu" path="res://scenes/cursor.tscn" id="2_lnu2h"]
 [ext_resource type="Texture2D" uid="uid://cod6ppkby6116" path="res://assets/map/tiles.png" id="2_yqjtg"]
-[ext_resource type="PackedScene" uid="uid://drm0ljm7eq57t" path="res://scenes/hud.tscn" id="4_lbhrr"]
-[ext_resource type="PackedScene" uid="uid://sjan3eivecdw" path="res://scenes/startscreen.tscn" id="5_iywne"]
+[ext_resource type="PackedScene" uid="uid://mre4faygt0rf" path="res://scenes/hotbar.tscn" id="6_p57ef"]
+[ext_resource type="PackedScene" uid="uid://c40cjxyw2c7v4" path="res://scenes/inventory.tscn" id="7_u5sy4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lnu2h"]
 resource_name = "tiles"
@@ -460,6 +461,7 @@ sources/0 = SubResource("TileSetAtlasSource_yqjtg")
 distance = -79.0
 
 [node name="Game" type="Node2D" unique_id=1101210002]
+script = ExtResource("1_p57ef")
 
 [node name="Layer1" type="TileMapLayer" parent="." unique_id=1063603332]
 position = Vector2(146, -102)
@@ -488,6 +490,17 @@ position = Vector2(145, -76)
 position = Vector2(0, -4)
 zoom = Vector2(6, 6)
 
-[node name="HUD" parent="." unique_id=572454751 instance=ExtResource("4_lbhrr")]
+[node name="HUD" type="CanvasLayer" parent="." unique_id=573467432]
 
-[node name="StartScreen" parent="HUD" unique_id=2019346187 instance=ExtResource("5_iywne")]
+[node name="Inventory" parent="HUD" unique_id=1548145143 instance=ExtResource("7_u5sy4")]
+offset_left = 241.0
+offset_top = 48.0
+offset_right = 281.0
+offset_bottom = 88.0
+
+[node name="Hotbar" parent="HUD" unique_id=1417792194 instance=ExtResource("6_p57ef")]
+anchors_preset = 7
+offset_left = -321.0
+offset_top = -91.0
+offset_right = -281.0
+offset_bottom = -12.0
