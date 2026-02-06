@@ -15,6 +15,32 @@ var _current_slot: int = 0
 # Reference to the main inventory (for shared held item)
 var main_inventory: Node = null
 
+func _get_main_inventory_script() -> Inventory:
+	# `game.gd` currently assigns `HUD/Inventory`, which is the *wrapper Control*
+	# from `inventory.tscn`, not the `Inventory.gd` Panel. Resolve that safely.
+	if main_inventory is Inventory:
+		return main_inventory as Inventory
+
+	if main_inventory != null:
+		# Common case: wrapper node has a child Panel named "Inventory" with the script.
+		var child := (main_inventory as Node).find_child("Inventory", true, false)
+		if child is Inventory:
+			return child as Inventory
+
+		# Fallback: search by type.
+		for n in (main_inventory as Node).get_children():
+			if n is Inventory:
+				return n as Inventory
+
+	# Last resort: find the first Inventory in the current scene.
+	var cs := get_tree().current_scene
+	if cs != null:
+		var any_inv := cs.find_child("Inventory", true, false)
+		if any_inv is Inventory:
+			return any_inv as Inventory
+
+	return null
+
 func _ready() -> void:
 	_cache_slots()
 	_items.resize(_slots.size())
@@ -185,7 +211,8 @@ func _on_slot_pressed(slot_index: int) -> void:
 	
 	# If we have a main_inventory reference and it has a held item,
 	# allow placing/swapping with inventory's held item
-	if main_inventory != null and main_inventory._held_item != null:
+	var inv := _get_main_inventory_script()
+	if inv != null and inv._held_item != null:
 		_handle_inventory_swap(slot_index)
 		return
 	
@@ -195,32 +222,33 @@ func _on_slot_pressed(slot_index: int) -> void:
 		return
 	
 	# If inventory exists, use its held item system
-	if main_inventory != null:
-		main_inventory._held_item = item
-		main_inventory._held_from_slot_index = -1  # -1 means from hotbar
+	if inv != null:
+		inv._held_item = item
+		inv._held_from_slot_index = -1  # -1 means from hotbar
 		clear_slot(slot_index)
-		main_inventory._update_held_visual()
+		inv._update_held_visual()
 		print("Picked up from hotbar: ", item)
 
 func _handle_inventory_swap(slot_index: int) -> void:
 	"""Handle placing/swapping when inventory has a held item"""
-	if main_inventory == null:
+	var inv := _get_main_inventory_script()
+	if inv == null:
 		return
 	
-	var held = main_inventory._held_item
+	var held = inv._held_item
 	var current = get_item(slot_index)
 	
 	# Place held item into hotbar slot
 	set_item(slot_index, held)
 	
 	# Update inventory's held item with what was in the hotbar
-	main_inventory._held_item = current
+	inv._held_item = current
 	
 	if current == null:
-		main_inventory._clear_held()
+		inv._clear_held()
 		print("Placed ", held, " into hotbar slot ", slot_index + 1)
 	else:
-		main_inventory._update_held_visual()
+		inv._update_held_visual()
 		print("Swapped ", held, " with ", current, " in hotbar slot ", slot_index + 1)
 
 # Helper to get current item
