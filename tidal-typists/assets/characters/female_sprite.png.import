@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cuo2g06g727at"
-path="res://.godot/imported/Fishing.png-b01970c53b7c63329348611368b4f500.ctex"
+uid="uid://ca3votsk006rh"
+path="res://.godot/imported/female_sprite.png-c5bbc6f60212b423fb5c53ca9043a575.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/Fishing.png"
-dest_files=["res://.godot/imported/Fishing.png-b01970c53b7c63329348611368b4f500.ctex"]
+source_file="res://assets/characters/female_sprite.png"
+dest_files=["res://.godot/imported/female_sprite.png-c5bbc6f60212b423fb5c53ca9043a575.ctex"]
 
 [params]
 
@@ -37,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

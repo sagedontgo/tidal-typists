@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://dy6k2xe4jqdfb"
-path="res://.godot/imported/nakacatch ng fish ver3.mp3-afd2ec6fde0c8f386c7ceb06657426a4.mp3str"
+path="res://.godot/imported/nakacatch ng fish ver3.mp3-9a7c06ae132378b27dceb56b074b1789.mp3str"
 
 [deps]
 
-source_file="res://Audio/SFX/nakacatch ng fish ver3.mp3"
-dest_files=["res://.godot/imported/nakacatch ng fish ver3.mp3-afd2ec6fde0c8f386c7ceb06657426a4.mp3str"]
+source_file="res://audio/SFX/nakacatch ng fish ver3.mp3"
+dest_files=["res://.godot/imported/nakacatch ng fish ver3.mp3-9a7c06ae132378b27dceb56b074b1789.mp3str"]
 
 [params]
 

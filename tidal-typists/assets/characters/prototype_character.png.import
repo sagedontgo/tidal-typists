@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cuo2g06g727at"
-path="res://.godot/imported/Fishing.png-b01970c53b7c63329348611368b4f500.ctex"
+uid="uid://carp6gnt22nuw"
+path="res://.godot/imported/prototype_character.png-84c30b383abd2ea908c92774e50d85e8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/Fishing.png"
-dest_files=["res://.godot/imported/Fishing.png-b01970c53b7c63329348611368b4f500.ctex"]
+source_file="res://assets/characters/prototype_character.png"
+dest_files=["res://.godot/imported/prototype_character.png-84c30b383abd2ea908c92774e50d85e8.ctex"]
 
 [params]
 

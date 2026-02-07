@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://b6e8ey2jptopm"
-path="res://.godot/imported/squidward.mp3-2b554ab2ec49da6b958f341b93df875e.mp3str"
+path="res://.godot/imported/squidward.mp3-606af0deec6660b5afe902b97ab6a1a1.mp3str"
 
 [deps]
 
-source_file="res://Audio/Walking/squidward.mp3"
-dest_files=["res://.godot/imported/squidward.mp3-2b554ab2ec49da6b958f341b93df875e.mp3str"]
+source_file="res://audio/walking/squidward.mp3"
+dest_files=["res://.godot/imported/squidward.mp3-606af0deec6660b5afe902b97ab6a1a1.mp3str"]
 
 [params]
 

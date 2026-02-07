@@ -20,7 +20,7 @@ corner_radius_bottom_left = 8
 layout_mode = 3
 anchors_preset = 0
 offset_right = 600.0
-offset_bottom = 400.0
+offset_bottom = 486.0
 
 [node name="Inventory" type="Panel" parent="." unique_id=1247532775]
 layout_mode = 0

@@ -15,9 +15,12 @@ func _enter_tree() -> void:
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
+	# Setup gender options
 	if _gender_select != null and _gender_select.item_count == 0:
-		_gender_select.add_item("Male (placeholder)")
-		_gender_select.add_item("Female (placeholder)")
+		_gender_select.add_item("Male")
+		_gender_select.add_item("Female")
+		# Set default selection
+		_gender_select.selected = 0
 
 	if _back_button != null and not _back_button.pressed.is_connected(_on_back_pressed):
 		_back_button.pressed.connect(_on_back_pressed)
@@ -38,9 +41,13 @@ func _on_continue_pressed() -> void:
 		push_warning("Nickname is empty.")
 		return
 
-	var gender := "unspecified"
+	var gender := "Male"  # Default
 	if _gender_select != null and _gender_select.selected >= 0:
 		gender = _gender_select.get_item_text(_gender_select.selected)
+	
+	var gd = get_node_or_null("/root/GlobalData")
+	gd.player_nickname = nickname
+	gd.player_gender = gender
 
+	print("✅ Character created: ", nickname, " (", gender, ")")
 	submitted.emit(nickname, gender)
-
