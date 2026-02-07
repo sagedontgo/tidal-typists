@@ -63,7 +63,6 @@ func _ready() -> void:
 	print("✅ Signals connected")
 	
 	print("\n=== Tidal Typist Ready! ===")
-	print("Press I, click Sword, click hotbar slot!")
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_accept") and not is_fishing:
