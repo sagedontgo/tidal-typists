@@ -1,6 +1,24 @@
 [gd_scene format=3 uid="uid://chp7eya6ont54"]
 
 [ext_resource type="Script" uid="uid://c6fr0bb6g00bs" path="res://scripts/combat.gd" id="1_764e3"]
+[ext_resource type="Texture2D" uid="uid://0mmhqifl41pk" path="res://Images/Fishing.png" id="2_qajva"]
+[ext_resource type="AudioStream" uid="uid://dugutp5c1vhf8" path="res://Audio/Background Music/BGM3 (Tales From The Vienna Woods).mp3" id="3_aic3r"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_qajva"]
+bg_color = Color(1, 1, 1, 0.6745098)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_aic3r"]
+bg_color = Color(0.16924512, 0.16924536, 0.16924521, 0.99215686)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
 
 [node name="Control" type="Control" unique_id=451658673]
 layout_mode = 3
@@ -25,25 +43,22 @@ layout_mode = 2
 size_flags_horizontal = 3
 color = Color(0.26583335, 0.55, 0, 1)
 
+[node name="Background" type="TextureRect" parent="HBoxContainer" unique_id=948656935]
+layout_mode = 2
+texture = ExtResource("2_qajva")
+
+[node name="FishSprite" type="TextureRect" parent="HBoxContainer/Background" unique_id=897568758]
+layout_mode = 0
+offset_left = 482.0
+offset_top = 79.0
+offset_right = 914.0
+offset_bottom = 576.0
+stretch_mode = 5
+
 [node name="Right" type="ColorRect" parent="HBoxContainer" unique_id=1372202083]
 layout_mode = 2
 size_flags_horizontal = 3
 color = Color(0.71, 0, 0.011833153, 1)
-
-[node name="FishSprite" type="TextureRect" parent="HBoxContainer/Right" unique_id=897568758]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -20.0
-offset_top = -20.0
-offset_right = 20.0
-offset_bottom = 20.0
-grow_horizontal = 2
-grow_vertical = 2
-stretch_mode = 5
 
 [node name="ChoiceButtons" type="VBoxContainer" parent="." unique_id=1061261523]
 layout_mode = 0
@@ -76,10 +91,13 @@ grow_vertical = 2
 
 [node name="WordLabel" type="Label" parent="CombatUI" unique_id=690458918]
 layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_qajva")
 text = "Words Words Words"
 
 [node name="InputBox" type="LineEdit" parent="CombatUI" unique_id=996283175]
 layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_aic3r")
 placeholder_text = "Words"
 context_menu_enabled = false
 caret_blink = true
@@ -168,3 +186,8 @@ layout_mode = 2
 [node name="ContinueButton" type="Button" parent="ResultUI" unique_id=375457061]
 layout_mode = 2
 text = "Continue"
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=296016982]
+stream = ExtResource("3_aic3r")
+pitch_scale = 0.57
+autoplay = true

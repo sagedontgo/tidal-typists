@@ -9,14 +9,9 @@ var has_started_game: bool = false
 var has_saved_player_position: bool = false
 var saved_player_position: Vector2 = Vector2.ZERO
 
-# If true, we skip the start menu overlay when `game.tscn` is loaded again
-# (e.g. returning from combat back into the game scene).
-var has_started_game: bool = false
-
-# Used to restore player position when coming back to `game.tscn`
-# after a scene change into combat.
-var has_saved_player_position: bool = false
-var saved_player_position: Vector2 = Vector2.ZERO
+# Player info
+var player_nickname: String = ""
+var player_gender: String = ""
 
 var fish_database = {
 	"common": [

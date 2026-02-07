@@ -19,7 +19,7 @@ extends Control
 @onready var result_label = $ResultUI/ResultLabel
 @onready var damage_label = $ResultUI/DamageLabel
 @onready var continue_button = $ResultUI/ContinueButton
-@onready var fish_sprite = $HBoxContainer/Right/FishSprite
+@onready var fish_sprite = $HBoxContainer/Background/FishSprite
 @onready var _gd: Node = get_node_or_null("/root/GlobalData")
 
 @export var easy_words: Array[String] = [
@@ -72,18 +72,6 @@ func _ready() -> void:
 	# Ensure input box can receive focus
 	input_box.focus_mode = Control.FOCUS_ALL
 	input_box.editable = true
-
-func load_fish_sprite() -> void:
-	if GlobalData.current_fish.has("sprite_path"):
-		print("Loading sprite from: ", GlobalData.current_fish["sprite_path"])
-		var texture = load(GlobalData.current_fish["sprite_path"])
-		if texture:
-			print("Texture loaded successfully")
-			fish_sprite.texture = texture
-		else:
-			print("Failed to load texture")
-	else:
-		print("No sprite_path in current_fish")
 
 func load_fish_sprite() -> void:
 	if GlobalData.current_fish.has("sprite_path"):

@@ -30,7 +30,16 @@ func _on_pressed() -> void:
 func _refresh() -> void:
 	if _item == null:
 		text = ""
+		# Light color for empty slot
+		add_theme_color_override("font_color", Color(0.5, 0.5, 0.5, 0.7))
 		return
+	
+	# Item exists - use warm text color
+	add_theme_color_override("font_color", Color(0.95, 0.90, 0.80, 1.0))  # Warm cream
+	
+	# Add text outline for readability
+	add_theme_color_override("font_outline_color", Color(0.1, 0.05, 0.0, 1.0))  # Dark brown
+	add_theme_constant_override("outline_size", 2)
 	
 	if _item is String:
 		text = _item
@@ -41,3 +50,15 @@ func _refresh() -> void:
 		return
 	
 	text = str(_item)
+	
+	# Add hover effect
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
+
+func _on_mouse_entered():
+	# Subtle highlight on hover
+	modulate = Color(1.2, 1.2, 1.2, 1.0)
+
+func _on_mouse_exited():
+	# Return to normal
+	modulate = Color(1.0, 1.0, 1.0, 1.0)

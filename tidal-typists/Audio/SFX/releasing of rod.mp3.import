@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://6kqge3lapggu"
+path="res://.godot/imported/releasing of rod.mp3-863789ab27f3f48da5a3bb52de22d8ee.mp3str"
+
+[deps]
+
+source_file="res://Audio/SFX/releasing of rod.mp3"
+dest_files=["res://.godot/imported/releasing of rod.mp3-863789ab27f3f48da5a3bb52de22d8ee.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

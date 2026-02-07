@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://mre4faygt0rf" path="res://scenes/hotbar.tscn" id="6_p57ef"]
 [ext_resource type="PackedScene" uid="uid://c40cjxyw2c7v4" path="res://scenes/inventory.tscn" id="7_u5sy4"]
 [ext_resource type="PackedScene" uid="uid://sjan3eivecdw" path="res://scenes/startscreen.tscn" id="8_gee14"]
+[ext_resource type="AudioStream" uid="uid://b74c3phi567ur" path="res://Audio/Background Music/BGM1 (Minuet Slow).mp3" id="10_vtaks"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_u5sy4"]
 resource_name = "tiles"
@@ -513,18 +514,18 @@ zoom = Vector2(6, 6)
 [node name="HUD" parent="." unique_id=1366750442 instance=ExtResource("4_lbhrr")]
 
 [node name="Inventory" parent="HUD" unique_id=1808077272 instance=ExtResource("7_u5sy4")]
-layout_mode = 3
-offset_left = 296.0
-offset_top = 89.0
-offset_right = 336.0
-offset_bottom = 129.0
+offset_left = 287.0
+offset_top = 29.0
+offset_right = 327.0
+offset_bottom = 69.0
 
 [node name="Hotbar" parent="HUD" unique_id=1417792194 instance=ExtResource("6_p57ef")]
-anchors_preset = 7
-offset_left = -321.0
-offset_top = -91.0
-offset_right = -281.0
-offset_bottom = -12.0
+offset_left = -304.0
+offset_top = -96.0
+offset_right = -264.0
+offset_bottom = -17.0
+grow_horizontal = 2
+grow_vertical = 0
 
 [node name="StartScreen" parent="HUD" unique_id=708417317 instance=ExtResource("8_gee14")]
 
@@ -554,3 +555,7 @@ offset_right = 158.0
 offset_bottom = -46.0
 theme_override_font_sizes/font_size = 5
 text = "Casting..."
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=484387492]
+stream = ExtResource("10_vtaks")
+autoplay = true

@@ -1,9 +1,25 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://bdlsmt8xn28cm"]
 
-[ext_resource type="Texture2D" path="res://Images/2d pixel background.png" id="1_bg"]
-[ext_resource type="Script" path="res://scripts/new_game_setup.gd" id="2_script"]
+[ext_resource type="Texture2D" uid="uid://birylhn30nsck" path="res://Images/2d pixel background.png" id="1_bg"]
+[ext_resource type="Script" uid="uid://byi6llyttru2n" path="res://scripts/new_game_setup.gd" id="2_script"]
 
-[node name="NewGameSetup" type="Control"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o4lne"]
+bg_color = Color(0.9490196, 0.9490196, 0.9490196, 0.81960785)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.54509807, 0.43529412, 0.2784314, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_005gt"]
+bg_color = Color(0.3779188, 0.3779189, 0.37791875, 0.8980392)
+
+[node name="NewGameSetup" type="Control" unique_id=717568077]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -11,8 +27,8 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_script")
 
-[node name="Background" type="TextureRect" parent="."]
-anchors_preset = 15
+[node name="Background" type="TextureRect" parent="." unique_id=972731560]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -21,18 +37,20 @@ texture = ExtResource("1_bg")
 expand_mode = 1
 stretch_mode = 6
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
-anchors_preset = 15
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=912456693]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="Panel" parent="CenterContainer"]
+[node name="Panel" type="Panel" parent="CenterContainer" unique_id=1425104435]
 custom_minimum_size = Vector2(520, 320)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_o4lne")
 
-[node name="Margin" type="MarginContainer" parent="CenterContainer/Panel"]
-anchors_preset = 15
+[node name="Margin" type="MarginContainer" parent="CenterContainer/Panel" unique_id=1421602716]
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -42,49 +60,61 @@ theme_override_constants/margin_top = 24
 theme_override_constants/margin_right = 24
 theme_override_constants/margin_bottom = 24
 
-[node name="InnerCenter" type="CenterContainer" parent="CenterContainer/Panel/Margin"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="InnerCenter" type="CenterContainer" parent="CenterContainer/Panel/Margin" unique_id=853042603]
+layout_mode = 2
 
-[node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin/InnerCenter"]
+[node name="VBox" type="VBoxContainer" parent="CenterContainer/Panel/Margin/InnerCenter" unique_id=851226187]
+layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="Title" type="Label" parent="CenterContainer/Panel/Margin/InnerCenter/VBox"]
+[node name="Title" type="Label" parent="CenterContainer/Panel/Margin/InnerCenter/VBox" unique_id=1019332141]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0.2509804, 1, 1)
+theme_override_colors/font_shadow_color = Color(0.1882353, 0.1882353, 0.1882353, 0.8862745)
 theme_override_font_sizes/font_size = 28
 text = "New Game"
 
-[node name="Spacer1" type="Control" parent="CenterContainer/Panel/Margin/InnerCenter/VBox"]
+[node name="Spacer1" type="Control" parent="CenterContainer/Panel/Margin/InnerCenter/VBox" unique_id=1686452109]
 custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
 
-[node name="NicknameLabel" type="Label" parent="CenterContainer/Panel/Margin/InnerCenter/VBox"]
+[node name="NicknameLabel" type="Label" parent="CenterContainer/Panel/Margin/InnerCenter/VBox" unique_id=1414714593]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Enter your nickname"
 
-[node name="NicknameInput" type="LineEdit" parent="CenterContainer/Panel/Margin/InnerCenter/VBox"]
+[node name="NicknameInput" type="LineEdit" parent="CenterContainer/Panel/Margin/InnerCenter/VBox" unique_id=1342727055]
+layout_mode = 2
 placeholder_text = "Nickname..."
 context_menu_enabled = false
 
-[node name="Spacer2" type="Control" parent="CenterContainer/Panel/Margin/InnerCenter/VBox"]
+[node name="Spacer2" type="Control" parent="CenterContainer/Panel/Margin/InnerCenter/VBox" unique_id=2002949764]
 custom_minimum_size = Vector2(0, 12)
+layout_mode = 2
 
-[node name="GenderLabel" type="Label" parent="CenterContainer/Panel/Margin/InnerCenter/VBox"]
+[node name="GenderLabel" type="Label" parent="CenterContainer/Panel/Margin/InnerCenter/VBox" unique_id=771408867]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Select your gender (placeholder)"
 
-[node name="GenderSelect" type="OptionButton" parent="CenterContainer/Panel/Margin/InnerCenter/VBox"]
+[node name="GenderSelect" type="OptionButton" parent="CenterContainer/Panel/Margin/InnerCenter/VBox" unique_id=98248011]
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_005gt")
 
-[node name="Spacer3" type="Control" parent="CenterContainer/Panel/Margin/InnerCenter/VBox"]
+[node name="Spacer3" type="Control" parent="CenterContainer/Panel/Margin/InnerCenter/VBox" unique_id=623420636]
 custom_minimum_size = Vector2(0, 18)
+layout_mode = 2
 
-[node name="ButtonsRow" type="HBoxContainer" parent="CenterContainer/Panel/Margin/InnerCenter/VBox"]
+[node name="ButtonsRow" type="HBoxContainer" parent="CenterContainer/Panel/Margin/InnerCenter/VBox" unique_id=1359604687]
+layout_mode = 2
 alignment = 2
 
-[node name="BackButton" type="Button" parent="CenterContainer/Panel/Margin/InnerCenter/VBox/ButtonsRow"]
+[node name="BackButton" type="Button" parent="CenterContainer/Panel/Margin/InnerCenter/VBox/ButtonsRow" unique_id=1342107410]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Back"
-theme_override_font_sizes/font_size = 20
 
-[node name="ContinueButton" type="Button" parent="CenterContainer/Panel/Margin/InnerCenter/VBox/ButtonsRow"]
+[node name="ContinueButton" type="Button" parent="CenterContainer/Panel/Margin/InnerCenter/VBox/ButtonsRow" unique_id=243717162]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
 text = "Continue"
-theme_override_font_sizes/font_size = 20
-

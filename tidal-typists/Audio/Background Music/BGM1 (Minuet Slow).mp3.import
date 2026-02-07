@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://b74c3phi567ur"
+path="res://.godot/imported/BGM1 (Minuet Slow).mp3-7cf906051d1e9fd86e48e78fc4127ca5.mp3str"
+
+[deps]
+
+source_file="res://Audio/Background Music/BGM1 (Minuet Slow).mp3"
+dest_files=["res://.godot/imported/BGM1 (Minuet Slow).mp3-7cf906051d1e9fd86e48e78fc4127ca5.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

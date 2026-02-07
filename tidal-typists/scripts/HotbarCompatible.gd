@@ -124,12 +124,24 @@ func update_selection() -> void:
 
 func _apply_selected_style(slot: Control) -> void:
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.3, 0.3, 0.3, 0.9)
-	style.border_width_left = 3
-	style.border_width_top = 3
-	style.border_width_right = 3
-	style.border_width_bottom = 3
-	style.border_color = Color(1.0, 1.0, 1.0)
+	
+	# Warm copper color for selected slot
+	style.bg_color = Color(0.71, 0.53, 0.35, 0.95)  # RGB: #B58759
+	
+	# Individual border widths (Godot 4 doesn't have border_width_all)
+	style.border_width_left = 4
+	style.border_width_top = 4
+	style.border_width_right = 4
+	style.border_width_bottom = 4
+	
+	# Bright golden border for selection
+	style.border_color = Color(0.95, 0.78, 0.38, 1.0)  # RGB: #F2C761
+	
+	# Slightly rounded corners
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_left = 4
+	style.corner_radius_bottom_right = 4
 	
 	slot.add_theme_stylebox_override("normal", style)
 	slot.add_theme_stylebox_override("hover", style)
@@ -137,12 +149,24 @@ func _apply_selected_style(slot: Control) -> void:
 
 func _apply_normal_style(slot: Control) -> void:
 	var style = StyleBoxFlat.new()
-	style.bg_color = Color(0.2, 0.2, 0.2, 0.8)
+	
+	# Darker brown for unselected slots
+	style.bg_color = Color(0.31, 0.25, 0.20, 0.90)  # RGB: #4F403
+	
+	# Thinner borders
 	style.border_width_left = 2
 	style.border_width_top = 2
 	style.border_width_right = 2
 	style.border_width_bottom = 2
-	style.border_color = Color(0.4, 0.4, 0.4)
+	
+	# Subtle dark copper border
+	style.border_color = Color(0.45, 0.35, 0.27, 1.0)  # RGB: #735945
+	
+	# Matching rounded corners
+	style.corner_radius_top_left = 4
+	style.corner_radius_top_right = 4
+	style.corner_radius_bottom_left = 4
+	style.corner_radius_bottom_right = 4
 	
 	slot.add_theme_stylebox_override("normal", style)
 	slot.add_theme_stylebox_override("hover", style)

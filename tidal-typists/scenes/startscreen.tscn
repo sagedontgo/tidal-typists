@@ -2,6 +2,23 @@
 
 [ext_resource type="Texture2D" uid="uid://birylhn30nsck" path="res://Images/2d pixel background.png" id="1_8hh42"]
 [ext_resource type="Script" uid="uid://cx66crcncs6m3" path="res://scripts/start_menu.gd" id="2_m1yxm"]
+[ext_resource type="AudioStream" uid="uid://c2rxtogmjfd88" path="res://Audio/Background Music/BGM2 (Minuet).mp3" id="3_o6o42"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1yxm"]
+bg_color = Color(1, 1, 1, 0.8901961)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.54509807, 0.43529412, 0.2784314, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o6o42"]
+bg_color = Color(1, 1, 1, 0.90588236)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.54509807, 0.43529412, 0.2784314, 1)
 
 [node name="StartScreen" type="Control" unique_id=708417317]
 layout_mode = 3
@@ -30,7 +47,9 @@ offset_left = -122.7305
 offset_top = 359.70874
 offset_right = 157.23706
 offset_bottom = 445.33942
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_m1yxm")
 text = "SETTING"
 
 [node name="Label" type="Label" parent="HBoxContainer/Sprite2D" unique_id=142947484]
@@ -43,6 +62,7 @@ offset_right = -408.64993
 offset_bottom = -206.23624
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 100
 text = "TIDAL TYPISTS"
 
@@ -51,7 +71,9 @@ offset_left = -130.88985
 offset_top = 251.83575
 offset_right = 164.36119
 offset_bottom = 338.18
+theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_o6o42")
 text = "New Game"
 metadata/_edit_use_anchors_ = true
 
@@ -64,5 +86,9 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("2_m1yxm")
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=522237786]
+stream = ExtResource("3_o6o42")
+autoplay = true
 
 [connection signal="pressed" from="HBoxContainer/Sprite2D/Button4" to="StartMenu" method="_on_button_4_pressed"]

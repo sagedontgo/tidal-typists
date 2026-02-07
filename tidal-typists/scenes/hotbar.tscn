@@ -1,10 +1,21 @@
 [gd_scene format=3 uid="uid://mre4faygt0rf"]
 
 [ext_resource type="Script" uid="uid://wsxgqalm4ylr" path="res://scripts/HotbarCompatible.gd" id="1_4qkdb"]
+[ext_resource type="Texture2D" uid="uid://brjq8o7n2r2vt" path="res://Images/Hotbar.png" id="2_2n1yv"]
 [ext_resource type="Script" uid="uid://ppp3r156q7oo" path="res://scripts/Slot.gd" id="2_xrqkv"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xrqkv"]
+bg_color = Color(0.23921569, 0.1882353, 0.14509805, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0.54509807, 0.43529412, 0.2784314, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+
 [node name="Hotbar" type="Panel" unique_id=1417792194]
-anchors_preset = -1
+anchors_preset = 7
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
@@ -13,7 +24,17 @@ offset_left = -256.0
 offset_top = -84.0
 offset_right = 379.0
 offset_bottom = -3.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_xrqkv")
 script = ExtResource("1_4qkdb")
+
+[node name="Background" type="TextureRect" parent="." unique_id=880154022]
+layout_mode = 0
+offset_left = -6.0
+offset_top = -11.0
+offset_right = 640.0
+offset_bottom = 87.0
+mouse_filter = 2
+texture = ExtResource("2_2n1yv")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=122162868]
 layout_mode = 0
@@ -26,6 +47,7 @@ alignment = 1
 [node name="Slot 1" type="Button" parent="HBoxContainer" unique_id=1795833251]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
+text_overrun_behavior = 6
 script = ExtResource("2_xrqkv")
 
 [node name="Slot 2" type="Button" parent="HBoxContainer" unique_id=1385210914]
