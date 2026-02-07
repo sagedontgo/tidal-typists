@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://b3acfdu8usrao"
-path="res://.godot/imported/Mouse2.mp3-fea0875a5b8980aadafb8538755483f0.mp3str"
+path="res://.godot/imported/Mouse2.mp3-e602515e9cbb11bb52756ba74b946019.mp3str"
 
 [deps]
 
-source_file="res://audio/mouse clicks/Mouse2.mp3"
-dest_files=["res://.godot/imported/Mouse2.mp3-fea0875a5b8980aadafb8538755483f0.mp3str"]
+source_file="res://Audio/Mouse Clicks/Mouse2.mp3"
+dest_files=["res://.godot/imported/Mouse2.mp3-e602515e9cbb11bb52756ba74b946019.mp3str"]
 
 [params]
 
