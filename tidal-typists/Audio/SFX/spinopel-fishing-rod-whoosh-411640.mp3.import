@@ -2,13 +2,13 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-uid="uid://dc7apmnumnpd"
-path="res://.godot/imported/spinopel-fishing-rod-whoosh-411640.mp3-be1d579c81993b47c91c6079f4f7ab06.mp3str"
+uid="uid://e1yd78l3ofey"
+path="res://.godot/imported/spinopel-fishing-rod-whoosh-411640.mp3-61874d71bd14809546d42bef27a89ea9.mp3str"
 
 [deps]
 
-source_file="res://Audio/SFX/spinopel-fishing-rod-whoosh-411640.mp3"
-dest_files=["res://.godot/imported/spinopel-fishing-rod-whoosh-411640.mp3-be1d579c81993b47c91c6079f4f7ab06.mp3str"]
+source_file="res://audio/SFX/spinopel-fishing-rod-whoosh-411640.mp3"
+dest_files=["res://.godot/imported/spinopel-fishing-rod-whoosh-411640.mp3-61874d71bd14809546d42bef27a89ea9.mp3str"]
 
 [params]
 

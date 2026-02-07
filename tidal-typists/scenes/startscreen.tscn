@@ -1,8 +1,8 @@
 [gd_scene format=3 uid="uid://sjan3eivecdw"]
 
-[ext_resource type="Texture2D" uid="uid://birylhn30nsck" path="res://Images/2d pixel background.png" id="1_8hh42"]
+[ext_resource type="Texture2D" uid="uid://dvynf11j0e758" path="res://Images/2d pixel background.png" id="1_8hh42"]
 [ext_resource type="Script" uid="uid://cx66crcncs6m3" path="res://scripts/start_menu.gd" id="2_m1yxm"]
-[ext_resource type="AudioStream" uid="uid://c2rxtogmjfd88" path="res://Audio/Background Music/BGM2 (Minuet).mp3" id="3_o6o42"]
+[ext_resource type="AudioStream" uid="uid://t20ap0e2eewt" path="res://audio/background music/BGM2 (Minuet).mp3" id="3_o6o42"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1yxm"]
 bg_color = Color(1, 1, 1, 0.8901961)
@@ -87,7 +87,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 script = ExtResource("2_m1yxm")
 
-[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=522237786]
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=484112604]
 stream = ExtResource("3_o6o42")
 autoplay = true
 

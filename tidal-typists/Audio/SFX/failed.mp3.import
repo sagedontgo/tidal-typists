@@ -2,13 +2,13 @@
 
 importer="mp3"
 type="AudioStreamMP3"
-uid="uid://sadbmymu6xuc"
-path="res://.godot/imported/failed.mp3-c770b0be9d1cf62cf30093f1f07a4c27.mp3str"
+uid="uid://2v7cf0orn8hr"
+path="res://.godot/imported/failed.mp3-631ae524d4ecf3dfed03e1e19ca0b597.mp3str"
 
 [deps]
 
-source_file="res://Audio/SFX/failed.mp3"
-dest_files=["res://.godot/imported/failed.mp3-c770b0be9d1cf62cf30093f1f07a4c27.mp3str"]
+source_file="res://audio/SFX/failed.mp3"
+dest_files=["res://.godot/imported/failed.mp3-631ae524d4ecf3dfed03e1e19ca0b597.mp3str"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bylbsplcmeo83"
-path="res://.godot/imported/Hotbar(dre).png-1c061e4492925b7d721fe28a08be9225.ctex"
+uid="uid://osgqqhaa7uy1"
+path="res://.godot/imported/Hotbar(dre).png-9f0f793f31ab9986423fceeb5a32b792.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/Hotbar(dre).png"
-dest_files=["res://.godot/imported/Hotbar(dre).png-1c061e4492925b7d721fe28a08be9225.ctex"]
+source_file="res://images/Hotbar(dre).png"
+dest_files=["res://.godot/imported/Hotbar(dre).png-9f0f793f31ab9986423fceeb5a32b792.ctex"]
 
 [params]
 

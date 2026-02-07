@@ -1,7 +1,7 @@
 extends Control
 
-# Hotbar for Tidal Typist - Compatible with click-based inventory system
-# Uses the same click-to-pick, click-to-place mechanics
+# Hotbar with LOCKED backpack (slot 9) and map (slot 8)
+# Backpack and Map cannot be moved from their slots
 
 signal slot_changed(slot_index: int)
 signal item_used(slot_index: int, item)
@@ -12,27 +12,22 @@ var _slots: Array[Node] = []
 var _items: Array = []
 var _current_slot: int = 0
 
-# Reference to the main inventory (for shared held item)
 var main_inventory: Node = null
+var map_view: Node = null
 
 func _get_main_inventory_script() -> Inventory:
-	# `game.gd` currently assigns `HUD/Inventory`, which is the *wrapper Control*
-	# from `inventory.tscn`, not the `Inventory.gd` Panel. Resolve that safely.
 	if main_inventory is Inventory:
 		return main_inventory as Inventory
 
 	if main_inventory != null:
-		# Common case: wrapper node has a child Panel named "Inventory" with the script.
 		var child := (main_inventory as Node).find_child("Inventory", true, false)
 		if child is Inventory:
 			return child as Inventory
 
-		# Fallback: search by type.
 		for n in (main_inventory as Node).get_children():
 			if n is Inventory:
 				return n as Inventory
 
-	# Last resort: find the first Inventory in the current scene.
 	var cs := get_tree().current_scene
 	if cs != null:
 		var any_inv := cs.find_child("Inventory", true, false)
@@ -47,16 +42,55 @@ func _ready() -> void:
 	refresh()
 	update_selection()
 	
-	# Example items for testing
-	add_item("Basic Rod")
-	add_item("Bait")
+	setup_hotbar_items()
+	lock_special_items()
+	
 	print("Hotbar ready with ", _slots.size(), " slots")
+
+func setup_hotbar_items():
+	"""Setup hotbar with backpack and map on the right side"""
+	
+	# Load your pixel art assets - ADJUST THESE PATHS TO YOUR ACTUAL FILE LOCATIONS!
+	var backpack_icon = load("res://assets/items/backpack.png")
+	var map_icon = load("res://assets/items/map.png")
+
+	
+	# Slots 1-7 are empty and available for other items
+	
+	# Right side - System tools (locked)
+	# Slot 8: Map (second from right) - LOCKED
+	set_item(7, {
+		"name": "Map",
+		"type": "tool_map",
+		"icon": map_icon,
+		"action": "open_map",
+		"locked": true
+	})
+	
+	# Slot 9: Backpack (rightmost) - LOCKED
+	set_item(8, {
+		"name": "Backpack",
+		"type": "tool_backpack",
+		"icon": backpack_icon,
+		"action": "open_inventory",
+		"locked": true
+	})
+	
+	print("✅ Hotbar configured: Slots 1-7 free, Map=8, Backpack=9")
+
+func lock_special_items():
+	"""Mark slots 8 and 9 as locked - cannot move these items"""
+	if _slots.size() > 7:
+		_slots[7].set_meta("locked", true)
+		print("🔒 Slot 8 (Map) locked")
+	if _slots.size() > 8:
+		_slots[8].set_meta("locked", true)
+		print("🔒 Slot 9 (Backpack) locked")
 
 func _input(event: InputEvent) -> void:
 	if not visible:
 		return
 	
-	# Handle number key presses (1-9, 0)
 	if event is InputEventKey and event.pressed and not event.echo:
 		var key_code = event.keycode
 		
@@ -64,7 +98,7 @@ func _input(event: InputEvent) -> void:
 		if key_code >= KEY_1 and key_code <= KEY_9:
 			select_slot(key_code - KEY_1)
 			get_viewport().set_input_as_handled()
-		# Key 0 (slot 10)
+		# Key 0 (selects slot 9 - the backpack!)
 		elif key_code == KEY_0 and _slots.size() >= 10:
 			select_slot(9)
 			get_viewport().set_input_as_handled()
@@ -88,7 +122,6 @@ func _cache_slots() -> void:
 	for child in slot_container.get_children():
 		_slots.append(child)
 	
-	# Setup each slot with hotbar reference
 	for i in range(_slots.size()):
 		var slot = _slots[i]
 		if slot.has_method("setup"):
@@ -108,15 +141,12 @@ func select_slot(index: int) -> void:
 	
 	var item = get_item(_current_slot)
 	if item != null:
-		var item_name = item if item is String else (item.get("name", "Unknown") if item is Dictionary else "Unknown")
+		var item_name = _get_item_name(item)
 		print("Hotbar selected slot ", _current_slot + 1, ": ", item_name)
 
 func update_selection() -> void:
-	# Update visual feedback for all slots
 	for i in range(_slots.size()):
 		var slot = _slots[i]
-		
-		# Apply selection style
 		if i == _current_slot:
 			_apply_selected_style(slot)
 		else:
@@ -124,20 +154,12 @@ func update_selection() -> void:
 
 func _apply_selected_style(slot: Control) -> void:
 	var style = StyleBoxFlat.new()
-	
-	# Warm copper color for selected slot
-	style.bg_color = Color(0.71, 0.53, 0.35, 0.95)  # RGB: #B58759
-	
-	# Individual border widths (Godot 4 doesn't have border_width_all)
+	style.bg_color = Color(0.71, 0.53, 0.35, 0.95)
 	style.border_width_left = 4
 	style.border_width_top = 4
 	style.border_width_right = 4
 	style.border_width_bottom = 4
-	
-	# Bright golden border for selection
-	style.border_color = Color(0.95, 0.78, 0.38, 1.0)  # RGB: #F2C761
-	
-	# Slightly rounded corners
+	style.border_color = Color(0.95, 0.78, 0.38, 1.0)
 	style.corner_radius_top_left = 4
 	style.corner_radius_top_right = 4
 	style.corner_radius_bottom_left = 4
@@ -149,20 +171,12 @@ func _apply_selected_style(slot: Control) -> void:
 
 func _apply_normal_style(slot: Control) -> void:
 	var style = StyleBoxFlat.new()
-	
-	# Darker brown for unselected slots
-	style.bg_color = Color(0.31, 0.25, 0.20, 0.90)  # RGB: #4F403
-	
-	# Thinner borders
+	style.bg_color = Color(0.31, 0.25, 0.20, 0.90)
 	style.border_width_left = 2
 	style.border_width_top = 2
 	style.border_width_right = 2
 	style.border_width_bottom = 2
-	
-	# Subtle dark copper border
-	style.border_color = Color(0.45, 0.35, 0.27, 1.0)  # RGB: #735945
-	
-	# Matching rounded corners
+	style.border_color = Color(0.45, 0.35, 0.27, 1.0)
 	style.corner_radius_top_left = 4
 	style.corner_radius_top_right = 4
 	style.corner_radius_bottom_left = 4
@@ -174,11 +188,53 @@ func _apply_normal_style(slot: Control) -> void:
 
 func use_current_item() -> void:
 	var item = get_item(_current_slot)
-	if item != null:
-		item_used.emit(_current_slot, item)
-		print("Used item from hotbar: ", item)
+	if item == null:
+		return
+	
+	if item is Dictionary:
+		var action = item.get("action", "")
+		
+		match action:
+			"open_inventory":
+				open_inventory()
+				return
+			"open_map":
+				open_map()
+				return
+	
+	item_used.emit(_current_slot, item)
+	print("Used item: ", _get_item_name(item))
 
-# Inventory-compatible methods (same API as inventory)
+func open_inventory():
+	var inv = _get_main_inventory_script()
+	if inv and inv.has_method("toggle_inventory"):
+		inv.toggle_inventory()
+		print("📦 Opened inventory via backpack!")
+	else:
+		print("⚠️ Inventory not found!")
+
+func open_map():
+	if map_view == null:
+		map_view = get_tree().current_scene.find_child("MapView", true, false)
+		if map_view == null:
+			map_view = get_tree().current_scene.find_child("Map", true, false)
+	
+	if map_view != null:
+		if map_view.has_method("toggle_map"):
+			map_view.toggle_map()
+		else:
+			map_view.visible = not map_view.visible
+		print("🗺️ Toggled map view!")
+	else:
+		print("⚠️ Map view not found!")
+
+func _get_item_name(item) -> String:
+	if item is String:
+		return item
+	if item is Dictionary and item.has("name"):
+		return str(item["name"])
+	return "Unknown"
+
 func get_slot_count() -> int:
 	return _slots.size()
 
@@ -227,54 +283,52 @@ func _update_slot(slot_index: int) -> void:
 	if slot.has_method("set_item"):
 		slot.set_item(_items[slot_index])
 
-# This is called by the slot when clicked (just like inventory)
 func _on_slot_pressed(slot_index: int) -> void:
-	# First, select the slot
+	# Check if slot is locked before allowing interaction
+	if slot_index < _slots.size():
+		var slot = _slots[slot_index]
+		if slot.get_meta("locked", false):
+			print("🔒 This item is locked and cannot be moved!")
+			return
 	
 	select_slot(slot_index)
 	
-	# If we have a main_inventory reference and it has a held item,
-	# allow placing/swapping with inventory's held item
-	var inv := _get_main_inventory_script()
-	if inv != null and inv._held_item != null:
-		_handle_inventory_swap(slot_index)
-		return
+	if main_inventory != null:
+		var inv = _get_main_inventory_script()
+		if inv != null and inv._held_item != null:
+			_handle_inventory_swap(slot_index)
+			return
 	
-	# Otherwise, handle click on hotbar itself (pick up from hotbar)
 	var item = get_item(slot_index)
 	if item == null:
 		return
 	
-	# If inventory exists, use its held item system
-	if inv != null:
-		inv._held_item = item
-		inv._held_from_slot_index = -1  # -1 means from hotbar
-		clear_slot(slot_index)
-		inv._update_held_visual()
-		print("Picked up from hotbar: ", item)
+	if main_inventory != null:
+		var inv = _get_main_inventory_script()
+		if inv != null:
+			inv._held_item = item
+			inv._held_from_slot_index = -1
+			clear_slot(slot_index)
+			inv._update_held_visual()
+			print("Picked up from hotbar: ", _get_item_name(item))
 
 func _handle_inventory_swap(slot_index: int) -> void:
-	"""Handle placing/swapping when inventory has a held item"""
-	var inv := _get_main_inventory_script()
+	var inv = _get_main_inventory_script()
 	if inv == null:
 		return
 	
 	var held = inv._held_item
 	var current = get_item(slot_index)
 	
-	# Place held item into hotbar slot
 	set_item(slot_index, held)
-	
-	# Update inventory's held item with what was in the hotbar
 	inv._held_item = current
 	
 	if current == null:
 		inv._clear_held()
-		print("Placed ", held, " into hotbar slot ", slot_index + 1)
+		print("Placed ", _get_item_name(held), " into hotbar slot ", slot_index + 1)
 	else:
 		inv._update_held_visual()
-		print("Swapped ", held, " with ", current, " in hotbar slot ", slot_index + 1)
+		print("Swapped ", _get_item_name(held), " with ", _get_item_name(current))
 
-# Helper to get current item
 func get_current_item():
 	return get_item(_current_slot)

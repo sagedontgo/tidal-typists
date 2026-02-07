@@ -9,47 +9,60 @@ signal slot_pressed(slot_index: int, item)
 var _slots: Array[Node] = []
 var _items: Array = []
 
-const INVENTORY_TOGGLE_ACTION := "inventory_toggle"
 const HELD_ITEM_OFFSET := Vector2(16, 16)
 
 var _held_item = null
-var _held_from_slot_index := -1 # legacy (kept for now; no longer used for swapping)
+var _held_from_slot_index := -1
 var _held_label: Label
 
+# NEW: Track if opened by backpack (no longer uses 'I' key)
+var _opened_by_backpack := false
+
 func _ready() -> void:
-	_ensure_inventory_toggle_keybind()
 	_setup_held_label()
 	_cache_slots()
 	_items.resize(_slots.size())
 	refresh()
 	
-	add_item("Sword")
-	add_item("Potion")
-	add_item("Shield")
+	# NEW: Add fishing items instead of Sword/Potion/Shield
+	add_fishing_items()
 	
 	slot_pressed.connect(Callable(self, "_on_slot_clicked"))
+	
+	# Start hidden (will be opened by backpack)
+	visible = false
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed(INVENTORY_TOGGLE_ACTION):
-		_toggle_inventory_panel()
-		get_viewport().set_input_as_handled()
+func add_fishing_items():
+	"""Add starting fishing items to inventory"""
+	
+	# Load your pixel art assets
+	var basic_rod_icon = load("res://assets/items/basic_rod.png")  # Adjust path!
+	var basic_bait_icon = load("res://assets/items/basic_bait.png")  # Adjust path!
+	
+	# Add Basic Fishing Rod
+	add_item({
+		"name": "Basic Rod",
+		"type": "fishing_rod",
+		"icon": basic_rod_icon,
+		"power": 10,
+		"durability": 100
+	})
+	
+	# Add Basic Bait (stackable)
+	add_item({
+		"name": "Basic Bait",
+		"type": "bait",
+		"icon": basic_bait_icon,
+		"count": 20,
+		"stackable": true,
+		"max_stack": 99
+	})
+	
+	print("✅ Added fishing items to inventory")
 
 func _process(_delta: float) -> void:
 	if _held_label != null and _held_label.visible:
 		_held_label.global_position = get_viewport().get_mouse_position() + HELD_ITEM_OFFSET
-
-func _ensure_inventory_toggle_keybind() -> void:
-	if not InputMap.has_action(INVENTORY_TOGGLE_ACTION):
-		InputMap.add_action(INVENTORY_TOGGLE_ACTION)
-	
-	# Bind "I" (physical key) if it isn't already bound.
-	for existing in InputMap.action_get_events(INVENTORY_TOGGLE_ACTION):
-		if existing is InputEventKey and existing.physical_keycode == KEY_I:
-			return
-	
-	var ev := InputEventKey.new()
-	ev.physical_keycode = KEY_I
-	InputMap.action_add_event(INVENTORY_TOGGLE_ACTION, ev)
 
 func _setup_held_label() -> void:
 	if _held_label != null:
@@ -63,19 +76,19 @@ func _setup_held_label() -> void:
 	add_child(_held_label)
 	set_process(true)
 
-func _toggle_inventory_panel() -> void:
-	# If we're holding an item, try to return it before closing.
+# NEW: Open/close inventory (called by backpack item)
+func toggle_inventory():
 	if visible and _held_item != null:
+		# Try to return held item before closing
 		var empty_index := _find_first_empty_slot()
 		if empty_index == -1:
-			# No room to return the held item; keep inventory open.
-			return
+			return  # Keep open if can't return item
 		set_item(empty_index, _held_item)
 		_clear_held()
 	
 	visible = not visible
-	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE if visible else Input.MOUSE_MODE_HIDDEN)
 	_update_held_visual()
+	print("Inventory ", "opened" if visible else "closed")
 
 func _update_held_visual() -> void:
 	if _held_label == null:
@@ -165,7 +178,7 @@ func _on_slot_pressed(slot_index: int) -> void:
 	slot_pressed.emit(slot_index, get_item(slot_index))
 	
 func _on_slot_clicked(slot_index: int, item) -> void:
-	# Click-to-pick, click-to-place.
+	# Click-to-pick, click-to-place
 	if _held_item == null:
 		if item == null:
 			return
@@ -176,7 +189,7 @@ func _on_slot_clicked(slot_index: int, item) -> void:
 		_update_held_visual()
 		return
 	
-	# Minecraft-style: place held item into clicked slot, then hold whatever was there.
+	# Place held item into clicked slot
 	var target_item = get_item(slot_index)
 	set_item(slot_index, _held_item)
 	_held_item = target_item
@@ -184,4 +197,3 @@ func _on_slot_clicked(slot_index: int, item) -> void:
 		_clear_held()
 	else:
 		_update_held_visual()
-	

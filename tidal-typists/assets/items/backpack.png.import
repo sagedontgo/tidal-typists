@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cuo2g06g727at"
-path="res://.godot/imported/Fishing.png-b01970c53b7c63329348611368b4f500.ctex"
+uid="uid://bsh530osp7jad"
+path="res://.godot/imported/backpack.png-dfede8e81ce869400049e04e7885c268.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/Fishing.png"
-dest_files=["res://.godot/imported/Fishing.png-b01970c53b7c63329348611368b4f500.ctex"]
+source_file="res://assets/items/backpack.png"
+dest_files=["res://.godot/imported/backpack.png-dfede8e81ce869400049e04e7885c268.ctex"]
 
 [params]
 
