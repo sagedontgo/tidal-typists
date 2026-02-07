@@ -145,6 +145,8 @@ func _on_new_game_setup_submitted(nickname: String, gender: String) -> void:
 		# Find and update the player's nickname label
 		var player = cs.get_node_or_null("Player")
 		if player != null:
+			if player.has_method("load_character_sprite"):
+				player.load_character_sprite()
 			var nickname_label = player.get_node_or_null("NicknameLabel")
 			if nickname_label != null:
 				nickname_label.text = nickname

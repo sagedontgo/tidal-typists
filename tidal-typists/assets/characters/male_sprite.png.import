@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://carp6gnt22nuw"
-path="res://.godot/imported/prototype_character.png-84cfb6df95976357a4d976f6930eb549.ctex"
+uid="uid://cs7u7b37utyu6"
+path="res://.godot/imported/male_sprite.png-88ee6ee44906d23377b43ae42c194b66.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/player/prototype_character.png"
-dest_files=["res://.godot/imported/prototype_character.png-84cfb6df95976357a4d976f6930eb549.ctex"]
+source_file="res://assets/characters/male_sprite.png"
+dest_files=["res://.godot/imported/male_sprite.png-88ee6ee44906d23377b43ae42c194b66.ctex"]
 
 [params]
 
@@ -37,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

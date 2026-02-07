@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://mre4faygt0rf"]
 
 [ext_resource type="Script" uid="uid://wsxgqalm4ylr" path="res://scripts/HotbarCompatible.gd" id="1_4qkdb"]
-[ext_resource type="Texture2D" uid="uid://br7sx5dqb425" path="res://Images/Hotbar.png" id="2_2n1yv"]
+[ext_resource type="Texture2D" uid="uid://br7sx5dqb425" path="res://images/Hotbar.png" id="2_2n1yv"]
 [ext_resource type="Script" uid="uid://ppp3r156q7oo" path="res://scripts/Slot.gd" id="2_xrqkv"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xrqkv"]
@@ -29,10 +29,10 @@ script = ExtResource("1_4qkdb")
 
 [node name="Background" type="TextureRect" parent="." unique_id=880154022]
 layout_mode = 0
-offset_left = -6.0
-offset_top = -11.0
-offset_right = 640.0
-offset_bottom = 87.0
+offset_left = -25.0
+offset_top = -15.0
+offset_right = 654.0
+offset_bottom = 96.0
 mouse_filter = 2
 texture = ExtResource("2_2n1yv")
 

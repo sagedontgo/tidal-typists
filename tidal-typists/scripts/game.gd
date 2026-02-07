@@ -113,6 +113,8 @@ func _ready() -> void:
 	else:
 		print("♻️ Using saved hotbar items - NOT setting up new items")
 	print("=== INITIALIZATION COMPLETE ===\n")
+	
+	print("\n=== Tidal Typist Ready! ===")
 
 func _input(event: InputEvent) -> void:
 	# Handle fishing rod casting with left mouse click

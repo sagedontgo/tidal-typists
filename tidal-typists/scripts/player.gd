@@ -8,8 +8,12 @@ const SPEED = 100.0
 var can_move = true
 
 func _ready() -> void:
-	# If we came back from combat, restore where we were.
 	var gd := get_node_or_null("/root/GlobalData")
+	
+	# Load the correct sprite based on gender selection
+	load_character_sprite()
+	
+	# If we came back from combat, restore where we were
 	if gd != null and bool(gd.get("has_saved_player_position")):
 		global_position = gd.get("saved_player_position")
 	
@@ -18,6 +22,36 @@ func _ready() -> void:
 		nickname_label.text = gd.get("player_nickname")
 	else:
 		nickname_label.text = "Player"
+
+func load_character_sprite():
+	"""Load the correct sprite sheet based on player's gender"""
+	var gd := get_node_or_null("/root/GlobalData")
+	if gd == null:
+		print("⚠️ GlobalData not found, using default sprite")
+		return
+	
+	var gender = gd.get("player_gender")
+	
+	# Determine which sprite sheet to use
+	var sprite_frames: SpriteFrames
+	
+	if gender == "Male (placeholder)" or gender == "Male":
+		sprite_frames = load("res://assets/characters/male_animations.tres")
+		print("✅ Loaded MALE character sprite")
+	elif gender == "Female (placeholder)" or gender == "Female":
+		sprite_frames = load("res://assets/characters/female_animations.tres")
+		print("✅ Loaded FEMALE character sprite")
+	else:
+		# Default to male if no gender selected
+		sprite_frames = load("res://assets/characters/male_animations.tres")
+		print("⚠️ No gender selected, defaulting to male sprite")
+	
+	# Apply the sprite frames
+	if sprite_frames and animated_sprite:
+		animated_sprite.sprite_frames = sprite_frames
+		animated_sprite.play("idle")
+	else:
+		print("❌ Failed to load sprite frames!")
 
 func _physics_process(_delta: float) -> void:
 	if not can_move:
@@ -62,8 +96,7 @@ func update_animation(direction: Vector2) -> void:
 func _input(event: InputEvent) -> void:
 	# TEST: Backslash key to instantly start a fight (for testing only)
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_BACKSLASH:
-		# Save our current position so returning from combat doesn't
-		# reset us to the scene's default spawn point.
+		# Save current position for combat return
 		var gd := get_node_or_null("/root/GlobalData")
 		if gd != null:
 			gd.set("has_saved_player_position", true)
