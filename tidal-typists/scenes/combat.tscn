@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c6fr0bb6g00bs" path="res://scripts/combat.gd" id="1_764e3"]
 [ext_resource type="Texture2D" uid="uid://cuo2g06g727at" path="res://Images/Fishing.png" id="2_qajva"]
-[ext_resource type="AudioStream" uid="uid://cmsq3idna1x1a" path="res://audio/background music/BGM3 (Tales From The Vienna Woods).mp3" id="3_aic3r"]
+[ext_resource type="AudioStream" uid="uid://cmsq3idna1x1a" path="res://Audio/Background Music/BGM3 (Tales From The Vienna Woods).mp3" id="3_aic3r"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4l26h"]
 bg_color = Color(1, 1, 1, 1)
@@ -186,13 +186,18 @@ layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -40.0
-offset_bottom = 40.0
+offset_left = -95.0
+offset_top = 5.0
+offset_right = -2.0
+offset_bottom = 125.0
 grow_horizontal = 0
 
 [node name="FishNameLabel" type="RichTextLabel" parent="FishInfo" unique_id=202100427]
+custom_minimum_size = Vector2(55, 35)
 layout_mode = 2
 bbcode_enabled = true
+fit_content = true
+scroll_active = false
 
 [node name="FishLevelLabel" type="Label" parent="FishInfo" unique_id=8916313]
 layout_mode = 2
