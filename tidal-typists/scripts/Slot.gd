@@ -8,6 +8,9 @@ var _item = null
 @onready var icon_rect: TextureRect = null
 @onready var count_label: Label = null
 
+# Reference to tooltip (will be set by inventory)
+var tooltip: Node = null
+
 func _ready():
 	# Setup icon display
 	setup_icon_display()
@@ -149,7 +152,24 @@ func _refresh() -> void:
 func _on_mouse_entered():
 	# Subtle highlight on hover
 	modulate = Color(1.2, 1.2, 1.2, 1.0)
+	
+	# Show tooltip if item exists
+	if _item != null and tooltip != null:
+		var mouse_pos = get_global_mouse_position()
+		if tooltip.has_method("show_tooltip"):
+			tooltip.show_tooltip(_item, mouse_pos)
 
 func _on_mouse_exited():
 	# Return to normal
 	modulate = Color(1.0, 1.0, 1.0, 1.0)
+	
+	# Hide tooltip
+	if tooltip != null and tooltip.has_method("hide_tooltip"):
+		tooltip.hide_tooltip()
+
+# Override _process to update tooltip position while hovering
+func _process(_delta: float) -> void:
+	if is_hovered() and _item != null and tooltip != null:
+		var mouse_pos = get_global_mouse_position()
+		if tooltip.has_method("position_tooltip"):
+			tooltip.position_tooltip(mouse_pos)

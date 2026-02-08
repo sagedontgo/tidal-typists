@@ -28,13 +28,55 @@ var fish_database = {
 			"sprite_path": "res://assets/fish/common/cod.png"
 		},
 		{
+			"name": "Dab",
+			"min_level": 1,
+			"max_level": 3,
+			"sprite_path": "res://assets/fish/common/dab.png"
+		},
+		{
+			"name": "Herring",
+			"min_level": 1,
+			"max_level": 4,
+			"sprite_path": "res://assets/fish/common/herring.png"
+		},
+		{
+			"name": "Mackerel",
+			"min_level": 2,
+			"max_level": 4,
+			"sprite_path": "res://assets/fish/common/mackerel.png"
+		},
+		{
+			"name": "Plaice",
+			"min_level": 1,
+			"max_level": 3,
+			"sprite_path": "res://assets/fish/common/plaice.png"
+		},
+		{
+			"name": "Pollock",
+			"min_level": 2,
+			"max_level": 4,
+			"sprite_path": "res://assets/fish/common/pollock.png"
+		},
+		{
 			"name": "Sardine",
+			"min_level": 1,
+			"max_level": 3,
+			"sprite_path": "res://assets/fish/common/sardine.png"
+		},
+		{
+			"name": "Whiting",
 			"min_level": 2,
 			"max_level": 5,
-			"sprite_path": "res://assets/fish/common/sardine.png"
+			"sprite_path": "res://assets/fish/common/whiting.png"
 		}
 	],
 	"uncommon": [
+		{
+			"name": "Blue Tang",
+			"min_level": 4,
+			"max_level": 7,
+			"sprite_path": "res://assets/fish/uncommon/blue_tang.png"
+		},
 		{
 			"name": "Bream",
 			"min_level": 4,
@@ -46,6 +88,36 @@ var fish_database = {
 			"min_level": 5,
 			"max_level": 8,
 			"sprite_path": "res://assets/fish/uncommon/clown_fish.png"
+		},
+		{
+			"name": "Cowfish",
+			"min_level": 4,
+			"max_level": 7,
+			"sprite_path": "res://assets/fish/uncommon/cowfish.png"
+		},
+		{
+			"name": "Flounder",
+			"min_level": 5,
+			"max_level": 8,
+			"sprite_path": "res://assets/fish/uncommon/flounder.png"
+		},
+		{
+			"name": "Parrot Fish",
+			"min_level": 5,
+			"max_level": 8,
+			"sprite_path": "res://assets/fish/uncommon/parrot_fish.png"
+		},
+		{
+			"name": "Pufferfish",
+			"min_level": 4,
+			"max_level": 8,
+			"sprite_path": "res://assets/fish/uncommon/pufferfish.png"
+		},
+		{
+			"name": "Weaver Fish",
+			"min_level": 5,
+			"max_level": 9,
+			"sprite_path": "res://assets/fish/uncommon/weaver_fish.png"
 		}
 	],
 	"rare": [
@@ -56,18 +128,114 @@ var fish_database = {
 			"sprite_path": "res://assets/fish/rare/atlantic_bass.png"
 		},
 		{
+			"name": "Ballan Wrasse",
+			"min_level": 8,
+			"max_level": 11,
+			"sprite_path": "res://assets/fish/rare/ballan_wrasse.png"
+		},
+		{
 			"name": "Banded Butterfly Fish",
 			"min_level": 8,
 			"max_level": 12,
 			"sprite_path": "res://assets/fish/rare/banded_butterflyfish.png"
+		},
+		{
+			"name": "Black Drum",
+			"min_level": 7,
+			"max_level": 11,
+			"sprite_path": "res://assets/fish/rare/black_drum.png"
+		},
+		{
+			"name": "Bonefish",
+			"min_level": 9,
+			"max_level": 12,
+			"sprite_path": "res://assets/fish/rare/bonefish.png"
+		},
+		{
+			"name": "Cobia",
+			"min_level": 8,
+			"max_level": 12,
+			"sprite_path": "res://assets/fish/rare/cobia.png"
+		},
+		{
+			"name": "Pompano",
+			"min_level": 7,
+			"max_level": 11,
+			"sprite_path": "res://assets/fish/rare/pompano.png"
+		},
+		{
+			"name": "Red Snapper",
+			"min_level": 8,
+			"max_level": 13,
+			"sprite_path": "res://assets/fish/rare/red_snapper.png"
+		},
+		{
+			"name": "Salmon",
+			"min_level": 9,
+			"max_level": 13,
+			"sprite_path": "res://assets/fish/rare/salmon.png"
 		}
 	],
 	"legendary": [
+		{
+			"name": "Angelfish",
+			"min_level": 12,
+			"max_level": 18,
+			"sprite_path": "res://assets/fish/legendary/angelfish.png"
+		},
+		{
+			"name": "Anglerfish",
+			"min_level": 13,
+			"max_level": 19,
+			"sprite_path": "res://assets/fish/legendary/anglerfish.png"
+		},
 		{
 			"name": "Blobfish",
 			"min_level": 10,
 			"max_level": 15,
 			"sprite_path": "res://assets/fish/legendary/blobfish.png"
+		},
+		{
+			"name": "Halibut",
+			"min_level": 14,
+			"max_level": 20,
+			"sprite_path": "res://assets/fish/legendary/halibut.png"
+		},
+		{
+			"name": "Lionfish",
+			"min_level": 13,
+			"max_level": 19,
+			"sprite_path": "res://assets/fish/legendary/lionfish.png"
+		},
+		{
+			"name": "Sea Horse",
+			"min_level": 11,
+			"max_level": 16,
+			"sprite_path": "res://assets/fish/legendary/sea_horse.png"
+		},
+		{
+			"name": "Silver Eel",
+			"min_level": 12,
+			"max_level": 17,
+			"sprite_path": "res://assets/fish/legendary/silver_eel.png"
+		},
+		{
+			"name": "Stingray",
+			"min_level": 14,
+			"max_level": 20,
+			"sprite_path": "res://assets/fish/legendary/stingray.png"
+		},
+		{
+			"name": "Tuna",
+			"min_level": 15,
+			"max_level": 22,
+			"sprite_path": "res://assets/fish/legendary/tuna.png"
+		},
+		{
+			"name": "Wolfish",
+			"min_level": 13,
+			"max_level": 19,
+			"sprite_path": "res://assets/fish/legendary/wolfish.png"
 		}
 	]
 }
