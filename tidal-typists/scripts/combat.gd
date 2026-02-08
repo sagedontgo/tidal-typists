@@ -339,14 +339,15 @@ func on_continue_pressed() -> void:
 	var fish := _gd.get("current_fish") as Dictionary
 	if int(fish.get("health", 0)) <= 0:
 		add_fish_to_inventory(fish)
+		GlobalData.current_rod["current_durability"] = GlobalData.rod_durability
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		SceneTransition.fade_to_scene("res://scenes/game.tscn")
 		return
-	
+
 	if int(_gd.get("rod_durability")) <= 0:
+		GlobalData.current_rod["current_durability"] = 0
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		SceneTransition.fade_to_scene("res://scenes/game.tscn")
-		return
 	
 	start_combat()
 

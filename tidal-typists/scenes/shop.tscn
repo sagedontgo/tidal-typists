@@ -1,0 +1,85 @@
+[gd_scene format=3 uid="uid://bcp07u0irwstv"]
+
+[ext_resource type="Script" uid="uid://c3s8ip0ur3ftu" path="res://scripts/shop.gd" id="1_lx5au"]
+[ext_resource type="Texture2D" uid="uid://bsisggugekrbs" path="res://icon.svg" id="2_xfvoa"]
+
+[node name="Control" type="Control" unique_id=347016077]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_lx5au")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=389771766]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ShopTitle" type="Label" parent="VBoxContainer" unique_id=1450307154]
+layout_mode = 2
+text = "Shop"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=311076937]
+layout_mode = 2
+
+[node name="RodShop" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=1907348475]
+layout_mode = 2
+
+[node name="Rods" type="Label" parent="VBoxContainer/HBoxContainer/RodShop" unique_id=36123739]
+layout_mode = 2
+text = "Rods"
+
+[node name="RodList" type="ItemList" parent="VBoxContainer/HBoxContainer/RodShop" unique_id=1381968309]
+layout_mode = 2
+item_count = 1
+item_0/text = "aadas"
+item_0/icon = ExtResource("2_xfvoa")
+
+[node name="BuyRodButton" type="Button" parent="VBoxContainer/HBoxContainer/RodShop" unique_id=1938322629]
+layout_mode = 2
+text = "Buy Rod"
+
+[node name="RepairRodButton" type="Button" parent="VBoxContainer/HBoxContainer/RodShop" unique_id=1250537943]
+layout_mode = 2
+text = "Repair Rod (50 TypBit)"
+
+[node name="BaitShop" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=1826633082]
+layout_mode = 2
+
+[node name="Bait" type="Label" parent="VBoxContainer/HBoxContainer/BaitShop" unique_id=1247431615]
+layout_mode = 2
+text = "Bait"
+
+[node name="BaitList" type="ItemList" parent="VBoxContainer/HBoxContainer/BaitShop" unique_id=839454759]
+layout_mode = 2
+
+[node name="BuyBaitButton" type="Button" parent="VBoxContainer/HBoxContainer/BaitShop" unique_id=1144001509]
+layout_mode = 2
+text = "Buy Bait"
+
+[node name="SellShop" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=274457222]
+layout_mode = 2
+
+[node name="SellFish" type="Label" parent="VBoxContainer/HBoxContainer/SellShop" unique_id=133819550]
+layout_mode = 2
+text = "Sell Fish"
+
+[node name="FishList" type="ItemList" parent="VBoxContainer/HBoxContainer/SellShop" unique_id=1567771816]
+layout_mode = 2
+
+[node name="SellFishButton" type="Button" parent="VBoxContainer/HBoxContainer/SellShop" unique_id=452222140]
+layout_mode = 2
+text = "Sell Selected"
+
+[node name="MoneyLabel" type="Label" parent="VBoxContainer" unique_id=83801269]
+layout_mode = 2
+text = "Money: 0"
+
+[node name="CloseButton" type="Button" parent="VBoxContainer" unique_id=2126660366]
+layout_mode = 2
+text = "Close Shop"

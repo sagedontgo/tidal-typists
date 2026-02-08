@@ -249,18 +249,118 @@ var rarity_weights = {
 
 var current_fish = {}
 var rod_durability = 100
+var player_money: int = 100
+var current_rod: Dictionary = {
+	"name": "Old Rod",
+	"tier": 1,
+	"max_durability": 100,
+	"current_durability": 100,
+	"rarity_boost": 0,
+	"level_boost": 0,
+	"price": 0
+}
+var current_bait: Dictionary = {
+	"name": "Basic Worm",
+	"tier": 1,
+	"rarity_boost": 0,
+	"level_boost": 0,
+	"price": 0,
+	"uses_remaining": 10,
+	"max_uses": 10
+}
+
+var rod_shop_inventory = [
+	{
+		"name": "Old Rod",
+		"tier": 1,
+		"max_durability": 100,
+		"rarity_boost": 0,
+		"level_boost": 0,
+		"price": 0
+	},
+	{
+		"name": "Good Rod",
+		"tier": 2,
+		"max_durability": 150,
+		"rarity_boost": 10,
+		"level_boost": 2,
+		"price": 500
+	},
+	{
+		"name": "Super Rod",
+		"tier": 3,
+		"max_durability": 200,
+		"rarity_boost": 25,
+		"level_boost": 5,
+		"price": 2000
+	},
+	{
+		"name": "Master Rod",
+		"tier": 4,
+		"max_durability": 300,
+		"rarity_boost": 50,
+		"level_boost": 10,
+		"price": 10000
+	}
+]
+
+var bait_shop_inventory = [
+	{
+		"name": "Basic Worm",
+		"tier": 1,
+		"rarity_boost": 0,
+		"level_boost": 0,
+		"max_uses": 10,
+		"price": 10
+	},
+	{
+		"name": "Quality Bait",
+		"tier": 2,
+		"rarity_boost": 15,
+		"level_boost": 3,
+		"max_uses": 15,
+		"price": 100
+	},
+	{
+		"name": "Premium Lure",
+		"tier": 3,
+		"rarity_boost": 30,
+		"level_boost": 6,
+		"max_uses": 20,
+		"price": 500
+	},
+	{
+		"name": "Legendary Bait",
+		"tier": 4,
+		"rarity_boost": 60,
+		"level_boost": 12,
+		"max_uses": 25,
+		"price": 2500
+	}
+]
 
 func roll_random_fish() -> Dictionary:
+	var rod_boost = current_rod.get("rarity_boost", 0)
+	var bait_boost = current_bait.get("rarity_boost", 0)
+	var total_rarity_boost = rod_boost + bait_boost
+	
+	var adjusted_weights = {
+		"common": max(10, rarity_weights["common"] - total_rarity_boost),
+		"uncommon": rarity_weights["uncommon"] + (total_rarity_boost * 0.4),
+		"rare": rarity_weights["rare"] + (total_rarity_boost * 0.4),
+		"legendary": rarity_weights["legendary"] + (total_rarity_boost * 0.2)
+	}
+	
 	var total_weight = 0
-	for weight in rarity_weights.values():
+	for weight in adjusted_weights.values():
 		total_weight += weight
 	
-	var roll = randi_range(1, total_weight)
-	var current_weight = 0
+	var roll = randf() * total_weight
+	var current_weight = 0.0
 	var selected_rarity = "common"
 	
-	for rarity in rarity_weights.keys():
-		current_weight += rarity_weights[rarity]
+	for rarity in adjusted_weights.keys():
+		current_weight += adjusted_weights[rarity]
 		if roll <= current_weight:
 			selected_rarity = rarity
 			break
@@ -268,7 +368,11 @@ func roll_random_fish() -> Dictionary:
 	var fish_pool = fish_database[selected_rarity]
 	var fish_data = fish_pool[randi() % fish_pool.size()]
 	
-	var fish_level = randi_range(fish_data["min_level"], fish_data["max_level"])
+	var level_boost = current_rod.get("level_boost", 0) + current_bait.get("level_boost", 0)
+	var min_level = fish_data["min_level"] + level_boost
+	var max_level = fish_data["max_level"] + level_boost
+	
+	var fish_level = randi_range(min_level, max_level)
 	var fish_health = fish_level * 20
 	var fish_max_damage = fish_level * 5
 	
@@ -281,3 +385,21 @@ func roll_random_fish() -> Dictionary:
 		"sprite_path": fish_data["sprite_path"],
 		"rarity": selected_rarity
 	}
+
+func calculate_fish_value(fish: Dictionary) -> int:
+	var base_value = 10
+	var level = fish.get("level", 1)
+	var rarity = fish.get("rarity", "common")
+	
+	var rarity_multiplier = 1.0
+	match rarity:
+		"common":
+			rarity_multiplier = 1.0
+		"uncommon":
+			rarity_multiplier = 3.0
+		"rare":
+			rarity_multiplier = 8.0
+		"legendary":
+			rarity_multiplier = 25.0
+	
+	return int(base_value * level * rarity_multiplier)
