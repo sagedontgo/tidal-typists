@@ -82,6 +82,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_764e3")
+easy_words = null
+medium_words = null
+hard_words = null
 
 [node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=1748567293]
 layout_mode = 1
@@ -250,9 +253,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -62.0
+offset_left = -37.0
 offset_top = 217.0
-offset_right = 17.0
+offset_right = 42.0
 offset_bottom = 302.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -262,38 +265,18 @@ z_index = 1
 layout_mode = 2
 horizontal_alignment = 1
 
-[node name="TextBox" type="Sprite2D" parent="ResultUI" unique_id=1137359885]
-position = Vector2(67.5, 16)
-scale = Vector2(5.5912485, 5.5912485)
-texture = ExtResource("4_p71o4")
-
-[node name="Label" type="Label" parent="ResultUI/TextBox" unique_id=1250782853]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -14.218648
-offset_top = -6.975189
-offset_right = -14.218647
-offset_bottom = -6.975189
-grow_horizontal = 2
-grow_vertical = 2
-scale = Vector2(0.43151805, 0.43151805)
-theme_override_font_sizes/font_size = 6
-text = "You caught a Lvl. 3 Dab!"
-horizontal_alignment = 1
-autowrap_mode = 3
-
-[node name="ContinueButton" type="Button" parent="." unique_id=375457061]
+[node name="ContinueButton" type="Button" parent="ResultUI" unique_id=375457061]
 z_index = 1
-layout_mode = 0
-offset_left = 513.0
-offset_top = 419.0
-offset_right = 649.0
-offset_bottom = 462.0
+layout_mode = 2
 text = "Continue"
 icon = ExtResource("3_p71o4")
 flat = true
 icon_alignment = 1
+
+[node name="TextBox" type="Sprite2D" parent="ResultUI" unique_id=1137359885]
+position = Vector2(67.5, 16)
+scale = Vector2(5.5912485, 5.5912485)
+texture = ExtResource("4_p71o4")
 
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1752077521]
 stream = ExtResource("3_aic3r")

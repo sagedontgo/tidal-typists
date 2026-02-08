@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://n1yd4wgc6f88"
-path="res://.godot/imported/pag naka catch sya fish ver1 .mp3-4550fcb03a64ac073e99820a48cdeb4f.mp3str"
+path="res://.godot/imported/pag naka catch sya fish ver1 .mp3-024b6dbd51a89ab67f0eccf9945194f9.mp3str"
 
 [deps]
 
-source_file="res://audio/SFX/pag naka catch sya fish ver1 .mp3"
-dest_files=["res://.godot/imported/pag naka catch sya fish ver1 .mp3-4550fcb03a64ac073e99820a48cdeb4f.mp3str"]
+source_file="res://Audio/SFX/pag naka catch sya fish ver1 .mp3"
+dest_files=["res://.godot/imported/pag naka catch sya fish ver1 .mp3-024b6dbd51a89ab67f0eccf9945194f9.mp3str"]
 
 [params]
 

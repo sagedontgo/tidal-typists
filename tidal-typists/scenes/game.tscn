@@ -11,7 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://mre4faygt0rf" path="res://scenes/hotbar.tscn" id="6_p57ef"]
 [ext_resource type="PackedScene" uid="uid://c40cjxyw2c7v4" path="res://scenes/inventory.tscn" id="7_u5sy4"]
 [ext_resource type="PackedScene" uid="uid://sjan3eivecdw" path="res://scenes/startscreen.tscn" id="8_gee14"]
-[ext_resource type="AudioStream" uid="uid://chl83s8f762db" path="res://audio/background music/BGM1 (Minuet Slow).mp3" id="10_vtaks"]
+[ext_resource type="AudioStream" uid="uid://chl83s8f762db" path="res://Audio/Background Music/BGM1 (Minuet Slow).mp3" id="10_vtaks"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vtaks"]
 resource_name = "tiles"

@@ -245,6 +245,8 @@ func catch_fish() -> void:
 	GlobalData.current_fish = GlobalData.roll_random_fish()
 	GlobalData.rod_durability = 100
 	
+	await SceneTransition.fade_to_scene("res://scenes/combat.tscn")
+	
 	# Save inventory/hotbar state before transitioning to combat
 	if inventory != null and inventory.has_method("save_to_global"):
 		inventory.save_to_global()

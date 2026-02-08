@@ -16,10 +16,11 @@ extends Control
 @onready var input_box = $CombatUI/InputBox
 @onready var timer_label = $CombatUI/TimerLabel
 @onready var result_ui = $ResultUI
-@onready var result_label = $ResultUI/ResultLabel
-@onready var damage_label = $ResultUI/DamageLabel
-@onready var continue_button = $ResultUI/ContinueButton
+@onready var result_textbox = $ResultUI/TextBox/Label
+@onready var result_textbox_sprite = $ResultUI/TextBox
+@onready var continue_button = $ContinueButton
 @onready var fish_sprite = $HBoxContainer/Background/FishSprite
+@onready var player_sprite = $HBoxContainer/Background/PlayerSprite
 @onready var _gd: Node = get_node_or_null("/root/GlobalData")
 
 @export var easy_words: Array[String] = [
@@ -48,12 +49,15 @@ var time_limit = 0.0
 var prep_time = 3.0
 var prep_timer = 0.0
 var is_prep_phase = false
-var _in_fish_attack := false
+var player_damage = 0
+var fish_damage_taken = 0
+var last_wpm = 0
+var last_accuracy = 0.0
 
 func _ready() -> void:
 	update_ui()
 	load_fish_sprite()
-	choice_buttons.visible = true
+	
 	prep_timer_ui.visible = false
 	combat_ui.visible = false
 	result_ui.visible = false
@@ -66,9 +70,33 @@ func _ready() -> void:
 	flee_button.focus_mode = Control.FOCUS_NONE
 	continue_button.focus_mode = Control.FOCUS_NONE
 	
-	# Ensure input box can receive focus
 	input_box.focus_mode = Control.FOCUS_ALL
 	input_box.editable = true
+	
+	show_intro_message()
+
+func show_intro_message() -> void:
+	if _gd == null:
+		return
+	
+	var fish := _gd.get("current_fish") as Dictionary
+	var fish_name = str(fish.get("name", "Unknown Fish"))
+	var fish_level = int(fish.get("level", 1))
+	
+	var intro_messages = [
+		"The Lv. %d %s tugs at your rod.",
+		"You caught a Lv. %d %s! Fight or flee?",
+		"A wild Lv. %d %s appears!",
+		"The Lv. %d %s struggles on the line!",
+		"You've hooked a Lv. %d %s!"
+	]
+	
+	var message = intro_messages[randi() % intro_messages.size()]
+	result_textbox.text = message % [fish_level, fish_name]
+	result_textbox_sprite.visible = true
+	result_ui.visible = true
+	choice_buttons.visible = true
+	continue_button.visible = false
 
 func load_fish_sprite() -> void:
 	if _gd == null:
@@ -77,25 +105,38 @@ func load_fish_sprite() -> void:
 	var fish := _gd.get("current_fish") as Dictionary
 	if fish.has("sprite_path"):
 		var sprite_path = fish.get("sprite_path", "")
-		print("Loading fish sprite from: ", sprite_path)
 		var texture = load(sprite_path)
 		if texture:
 			fish_sprite.texture = texture
-			print("✅ Fish sprite loaded successfully")
-		else:
-			print("⚠️ Failed to load fish texture from: ", sprite_path)
-	else:
-		print("⚠️ No sprite_path found in current_fish")
 
+func load_player_sprite() -> void:
+	if _gd == null:
+		return
+	
+	var gender = _gd.get("player_gender")
+	var sprite_path = ""
+	
+	if gender == "Male":
+		sprite_path = "res://assets/characters/male_sprite.png"
+	elif gender == "Female":
+		sprite_path = "res://assets/characters/female_sprite.png"
+	else:
+		sprite_path = "res://assets/characters/male_sprite.png"
+	
+	var texture = load(sprite_path)
+	if texture:
+		player_sprite.texture = texture
+		print("✅ Player sprite loaded: ", sprite_path)
+	else:
+		print("⚠️ Failed to load player sprite: ", sprite_path)
+		
 func update_ui() -> void:
 	if _gd == null:
-		push_error("GlobalData autoload missing. Check Project Settings > Autoload.")
 		return
 	
 	rod_durability_label.text = "Rod: " + str(_gd.get("rod_durability")) + "%"
 	var fish := _gd.get("current_fish") as Dictionary
 	
-	# Color-code fish name by rarity
 	var rarity_color = ""
 	if fish.has("rarity"):
 		match fish.get("rarity"):
@@ -115,17 +156,16 @@ func update_ui() -> void:
 
 func on_fight_pressed() -> void:
 	choice_buttons.visible = false
+	result_ui.visible = false
 	prep_timer_ui.visible = true
 	is_prep_phase = true
 	prep_timer = 0.0
 
 func on_flee_pressed() -> void:
-	# Restore custom cursor when returning to game
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-	get_tree().change_scene_to_file("res://scenes/game.tscn")
+	SceneTransition.fade_to_scene("res://scenes/game.tscn")
 
 func _input(event: InputEvent) -> void:
-	# Handle Enter key manually during combat
 	if combat_ui.visible and event.is_action_pressed("ui_accept"):
 		if input_box and input_box.has_focus():
 			var text = input_box.text.strip_edges()
@@ -154,7 +194,6 @@ func start_combat() -> void:
 	combat_ui.visible = true
 	
 	if _gd == null:
-		push_error("GlobalData autoload missing. Check Project Settings > Autoload.")
 		return
 	var fish := _gd.get("current_fish") as Dictionary
 	var fish_level: int = int(fish.get("level", 1))
@@ -199,8 +238,7 @@ func on_text_submitted(text: String) -> void:
 	
 	if current_word_index < words_to_type.size():
 		word_label.text = words_to_type[current_word_index]
-		input_box.text = ""  # Clear text directly instead of using clear()
-		# Focus stays on input_box automatically since we handled the Enter key
+		input_box.text = ""
 	else:
 		input_box.clear()
 		end_turn()
@@ -218,78 +256,117 @@ func calculate_accuracy(typed: String, correct: String) -> void:
 	elif correct.length() > typed.length():
 		total_characters_typed += correct.length() - typed.length()
 
+var is_showing_player_result = false
+
 func end_turn() -> void:
 	combat_ui.visible = false
-	result_ui.visible = true
-	_in_fish_attack = false
-	# Player-result screen: Continue should be usable here.
-	continue_button.disabled = false
-	continue_button.visible = true
 	
 	var time_taken = Time.get_ticks_msec() / 1000.0 - start_time
-	var wpm = (typed_words.size() / time_taken) * 60.0
-	var accuracy = (float(correct_characters) / float(total_characters_typed)) * 100.0 if total_characters_typed > 0 else 0.0
+	last_wpm = int((typed_words.size() / time_taken) * 60.0)
+	last_accuracy = (float(correct_characters) / float(total_characters_typed)) * 100.0 if total_characters_typed > 0 else 0.0
 	
-	var damage = 0
-	if accuracy >= 70:
-		damage = int(wpm * (accuracy / 100.0))
+	player_damage = 0
+	if last_accuracy >= 70:
+		player_damage = int(last_wpm * (last_accuracy / 100.0))
 		if _gd != null:
 			var fish := _gd.get("current_fish") as Dictionary
-			var new_health = int(fish.get("health", 0)) - damage
-			fish["health"] = max(0, new_health)  # Clamp health to minimum of 0
+			var new_health = int(fish.get("health", 0)) - player_damage
+			fish["health"] = max(0, new_health)
 			_gd.set("current_fish", fish)
-		result_label.text = "Hit!"
-		damage_label.text = "Damage: " + str(damage) + "\nWPM: " + str(int(wpm)) + " | Accuracy: " + str(int(accuracy)) + "%"
-	else:
-		result_label.text = "Miss!"
-		damage_label.text = "Accuracy too low!\nWPM: " + str(int(wpm)) + " | Accuracy: " + str(int(accuracy)) + "%"
 	
 	update_ui()
+	show_player_result()
+
+func show_player_result() -> void:
+	if _gd == null:
+		return
+	
+	var fish := _gd.get("current_fish") as Dictionary
+	var fish_name = str(fish.get("name", "Unknown Fish"))
+	
+	var message = ""
+	if last_accuracy >= 70:
+		var hit_messages = [
+			"You hit %s for %d damage with %d WPM at %d%% Accuracy!",
+			"The fish thrashes! You deal %d damage. (%d WPM, %d%% Accuracy)",
+			"Your strike lands! %d damage dealt to %s. (%d WPM at %d%%)",
+			"Critical hit! %s takes %d damage! (%d WPM, %d%% Accuracy)",
+			"The %s reels in pain! %d damage! (%d WPM at %d%%)"
+		]
+		var selected = hit_messages[randi() % hit_messages.size()]
+		
+		if selected.count("%s") == 2:
+			message = selected % [fish_name, player_damage, last_wpm, int(last_accuracy)]
+		elif selected.count("%s") == 1 and selected.find("%s") < selected.find("%d"):
+			message = selected % [fish_name, player_damage, last_wpm, int(last_accuracy)]
+		else:
+			message = selected % [player_damage, fish_name, last_wpm, int(last_accuracy)]
+	else:
+		var miss_messages = [
+			"You missed! %d WPM at %d%% Accuracy.",
+			"The fish dodges! %d WPM, %d%% Accuracy.",
+			"Your strike misses! (%d WPM at %d%%)",
+			"Too slow! %d WPM at %d%% Accuracy.",
+			"The %s evades your attack! (%d WPM, %d%%)"
+		]
+		var selected = miss_messages[randi() % miss_messages.size()]
+		
+		if selected.count("%s") == 1:
+			message = selected % [fish_name, last_wpm, int(last_accuracy)]
+		else:
+			message = selected % [last_wpm, int(last_accuracy)]
+	
+	result_textbox.text = message
+	result_textbox_sprite.visible = true
+	result_ui.visible = true
+	continue_button.visible = true
+	is_showing_player_result = true
 
 func on_continue_pressed() -> void:
-	# During fish attack phase, Continue must do nothing to prevent multi-hit bugs.
-	if _in_fish_attack:
+	if is_showing_player_result:
+		is_showing_player_result = false
+		result_ui.visible = false
+		fish_turn()
 		return
-
+	
 	result_ui.visible = false
 	
 	if _gd == null:
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-		get_tree().change_scene_to_file("res://scenes/game.tscn")
-		return
-	var fish := _gd.get("current_fish") as Dictionary
-	if int(fish.get("health", 0)) <= 0:
-		# Fish defeated! Add to inventory
-		add_fish_to_inventory(fish)
-		
-		# Restore custom cursor
-		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-		get_tree().change_scene_to_file("res://scenes/game.tscn")
+		SceneTransition.fade_to_scene("res://scenes/game.tscn")
 		return
 	
-	fish_turn()
+	var fish := _gd.get("current_fish") as Dictionary
+	if int(fish.get("health", 0)) <= 0:
+		add_fish_to_inventory(fish)
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+		SceneTransition.fade_to_scene("res://scenes/game.tscn")
+		return
+	
+	if int(_gd.get("rod_durability")) <= 0:
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+		SceneTransition.fade_to_scene("res://scenes/game.tscn")
+		return
+	
+	start_combat()
 
 func add_fish_to_inventory(fish: Dictionary) -> void:
-	"""Add the caught fish to the player's inventory"""
 	if _gd == null:
 		return
 	
 	print("🐟 Fish defeated! Adding to inventory...")
 	
-	# Create fish item for inventory
 	var fish_item = {
 		"name": fish.get("name", "Unknown Fish"),
 		"type": "fish",
 		"rarity": fish.get("rarity", "common"),
 		"level": fish.get("level", 1),
-		"icon": load(fish.get("sprite_path", "")),  # Load the fish sprite as icon
+		"icon": load(fish.get("sprite_path", "")),
 		"sprite_path": fish.get("sprite_path", ""),
 		"description": "A %s fish caught at level %d." % [fish.get("rarity", "common"), fish.get("level", 1)]
 	}
 	
-	# Add to saved inventory (GlobalData will persist it)
 	if _gd.saved_inventory_items.size() > 0:
-		# Find first empty slot
 		var added = false
 		for i in range(_gd.saved_inventory_items.size()):
 			if _gd.saved_inventory_items[i] == null:
@@ -304,36 +381,36 @@ func add_fish_to_inventory(fish: Dictionary) -> void:
 		print("⚠️ Inventory not initialized, fish not added.")
 
 func fish_turn() -> void:
-	_in_fish_attack = true
-	# Fish-attack screen: hide/disable Continue to prevent multiple damage ticks.
-	continue_button.disabled = true
-	continue_button.visible = false
-
 	if _gd == null:
-		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-		get_tree().change_scene_to_file("res://scenes/game.tscn")
 		return
-	var fish := _gd.get("current_fish") as Dictionary
-	var fish_damage = randi_range(1, int(fish.get("max_damage", 1)))
-	var time_taken = Time.get_ticks_msec() / 1000.0 - start_time
-	var wpm = (typed_words.size() / time_taken) * 60.0
-	var wpm_reduction = int(wpm * 0.1)
-	fish_damage = max(1, fish_damage - wpm_reduction)
 	
-	var new_rod_durability = int(_gd.get("rod_durability")) - fish_damage
-	_gd.set("rod_durability", max(0, new_rod_durability))  # Clamp rod durability to minimum of 0
+	var fish := _gd.get("current_fish") as Dictionary
+	var fish_name = str(fish.get("name", "Unknown Fish"))
+	fish_damage_taken = randi_range(1, int(fish.get("max_damage", 1)))
+	var wpm_reduction = int(last_wpm * 0.1)
+	fish_damage_taken = max(1, fish_damage_taken - wpm_reduction)
+	
+	var new_rod_durability = int(_gd.get("rod_durability")) - fish_damage_taken
+	_gd.set("rod_durability", max(0, new_rod_durability))
 	update_ui()
 	
-	result_ui.visible = true
-	result_label.text = "Fish attacks!"
-	damage_label.text = "Rod damage: " + str(fish_damage)
+	var fish_messages = [
+		"The fish bites back! Your rod takes %d damage.",
+		"The %s thrashes! Rod durability -%d.",
+		"Counter-attack! The fish deals %d damage to your rod!",
+		"The %s fights back fiercely! -%d rod durability.",
+		"Your rod creaks under pressure! %d damage taken!"
+	]
 	
-	await get_tree().create_timer(1.5).timeout
-	result_ui.visible = false
+	var selected = fish_messages[randi() % fish_messages.size()]
+	var message = ""
 	
-	if int(_gd.get("rod_durability")) <= 0:
-		# Rod broke! Restore custom cursor
-		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-		get_tree().change_scene_to_file("res://scenes/game.tscn")
+	if selected.count("%s") == 1:
+		message = selected % [fish_name, fish_damage_taken]
 	else:
-		start_combat()
+		message = selected % [fish_damage_taken]
+	
+	result_textbox.text = message
+	result_textbox_sprite.visible = true
+	result_ui.visible = true
+	continue_button.visible = true

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://rkqc56tf6rbi"
-path="res://.godot/imported/Inventory.png-bb89405bd762354a25cf9821ab53a72a.ctex"
+uid="uid://cpw51d321tngb"
+path="res://.godot/imported/FightScene.png-d97a012c58ec4cf0e437b2ffa340a3eb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Images/Inventory.png"
-dest_files=["res://.godot/imported/Inventory.png-bb89405bd762354a25cf9821ab53a72a.ctex"]
+source_file="res://assets/images/FightScene.png"
+dest_files=["res://.godot/imported/FightScene.png-d97a012c58ec4cf0e437b2ffa340a3eb.ctex"]
 
 [params]
 
@@ -37,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

@@ -3,12 +3,12 @@
 importer="mp3"
 type="AudioStreamMP3"
 uid="uid://cmsq3idna1x1a"
-path="res://.godot/imported/BGM3 (Tales From The Vienna Woods).mp3-13eaad32e46d1be1bd046711eb2c3b3a.mp3str"
+path="res://.godot/imported/BGM3 (Tales From The Vienna Woods).mp3-de5c25152bb36937faf3b60c29d3245a.mp3str"
 
 [deps]
 
-source_file="res://audio/background music/BGM3 (Tales From The Vienna Woods).mp3"
-dest_files=["res://.godot/imported/BGM3 (Tales From The Vienna Woods).mp3-13eaad32e46d1be1bd046711eb2c3b3a.mp3str"]
+source_file="res://Audio/Background Music/BGM3 (Tales From The Vienna Woods).mp3"
+dest_files=["res://.godot/imported/BGM3 (Tales From The Vienna Woods).mp3-de5c25152bb36937faf3b60c29d3245a.mp3str"]
 
 [params]
 
