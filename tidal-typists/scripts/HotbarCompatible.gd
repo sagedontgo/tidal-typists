@@ -42,9 +42,6 @@ func _ready() -> void:
 	refresh()
 	update_selection()
 	
-	setup_hotbar_items()
-	lock_special_items()
-	
 	print("Hotbar ready with ", _slots.size(), " slots")
 
 func setup_hotbar_items():
@@ -91,21 +88,33 @@ func _input(event: InputEvent) -> void:
 	if not visible:
 		return
 	
-	if event is InputEventKey and event.pressed and not event.echo:
-		var key_code = event.keycode
+	# Check if inventory is open (to prevent duplicate handling)
+	var inv := _get_main_inventory_script()
+	var inventory_is_open = inv != null and inv.visible
+	
+	if event is InputEventKey:
+		# Prevent WASD/arrow keys from moving focus in hotbar when inventory is closed
+		if not inventory_is_open:
+			if event.is_action("ui_up") or event.is_action("ui_down") or \
+			   event.is_action("ui_left") or event.is_action("ui_right"):
+				get_viewport().set_input_as_handled()
+				return
 		
-		# Keys 1-9
-		if key_code >= KEY_1 and key_code <= KEY_9:
-			select_slot(key_code - KEY_1)
-			get_viewport().set_input_as_handled()
-		# Key 0 (selects slot 9 - the backpack!)
-		elif key_code == KEY_0 and _slots.size() >= 10:
-			select_slot(9)
-			get_viewport().set_input_as_handled()
-		# Use item (E key)
-		elif key_code == KEY_E:
-			use_current_item()
-			get_viewport().set_input_as_handled()
+		if event.pressed and not event.echo:
+			var key_code = event.keycode
+			
+			# Keys 1-9
+			if key_code >= KEY_1 and key_code <= KEY_9:
+				select_slot(key_code - KEY_1)
+				get_viewport().set_input_as_handled()
+			# Key 0 (selects slot 9 - the backpack!)
+			elif key_code == KEY_0 and _slots.size() >= 10:
+				select_slot(9)
+				get_viewport().set_input_as_handled()
+			# Use item (E key)
+			elif key_code == KEY_E:
+				use_current_item()
+				get_viewport().set_input_as_handled()
 	
 	# Mouse wheel scrolling
 	if event is InputEventMouseButton and not event.pressed:
@@ -332,3 +341,45 @@ func _handle_inventory_swap(slot_index: int) -> void:
 
 func get_current_item():
 	return get_item(_current_slot)
+
+# Save/Load hotbar state to GlobalData
+func save_to_global() -> void:
+	var gd = get_node_or_null("/root/GlobalData")
+	if gd != null:
+		gd.saved_hotbar_items = _items.duplicate()
+		gd.has_initialized_hotbar = true
+		print("✅ Saved hotbar items to GlobalData (", _items.size(), " slots)")
+
+func load_from_global() -> bool:
+	var gd = get_node_or_null("/root/GlobalData")
+	print("📥 Hotbar load_from_global called")
+	if gd != null:
+		print("  - has_initialized_hotbar: ", gd.has_initialized_hotbar)
+		print("  - saved_hotbar_items size: ", gd.saved_hotbar_items.size())
+		
+		if gd.has_initialized_hotbar:
+			# Restore items if array sizes match
+			if gd.saved_hotbar_items.size() == _items.size():
+				# Use deep copy to avoid reference issues
+				_items = []
+				for item in gd.saved_hotbar_items:
+					if item is Dictionary:
+						_items.append(item.duplicate())
+					else:
+						_items.append(item)
+				
+				refresh()
+				print("✅ Loaded hotbar items from GlobalData")
+				# Debug: print items
+				for i in range(min(5, _items.size())):
+					if _items[i] != null:
+						var item_name = _items[i].get("name", "Unknown") if _items[i] is Dictionary else str(_items[i])
+						print("    Slot ", i, ": ", item_name)
+					else:
+						print("    Slot ", i, ": (empty)")
+				return true
+			else:
+				print("⚠️ Hotbar size mismatch, skipping load")
+		else:
+			print("  - No previous hotbar initialization found")
+	return false

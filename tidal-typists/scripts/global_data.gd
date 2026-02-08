@@ -13,6 +13,12 @@ var saved_player_position: Vector2 = Vector2.ZERO
 var player_nickname: String = ""
 var player_gender: String = ""
 
+# Inventory/Hotbar persistence (stores items between scenes)
+var saved_inventory_items: Array = []
+var saved_hotbar_items: Array = []
+var has_initialized_inventory: bool = false
+var has_initialized_hotbar: bool = false
+
 var fish_database = {
 	"common": [
 		{

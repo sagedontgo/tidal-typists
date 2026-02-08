@@ -61,10 +61,7 @@ func _ready() -> void:
 	fight_button.pressed.connect(on_fight_pressed)
 	flee_button.pressed.connect(on_flee_pressed)
 	continue_button.pressed.connect(on_continue_pressed)
-	# Don't connect text_submitted - we'll handle Enter key manually
-
-	# Prevent Enter from accidentally "activating" a focused button.
-	# During combat we want typing input to own focus.
+	
 	fight_button.focus_mode = Control.FOCUS_NONE
 	flee_button.focus_mode = Control.FOCUS_NONE
 	continue_button.focus_mode = Control.FOCUS_NONE
@@ -74,26 +71,34 @@ func _ready() -> void:
 	input_box.editable = true
 
 func load_fish_sprite() -> void:
-	if GlobalData.current_fish.has("sprite_path"):
-		print("Loading sprite from: ", GlobalData.current_fish["sprite_path"])
-		var texture = load(GlobalData.current_fish["sprite_path"])
+	if _gd == null:
+		return
+	
+	var fish := _gd.get("current_fish") as Dictionary
+	if fish.has("sprite_path"):
+		var sprite_path = fish.get("sprite_path", "")
+		print("Loading fish sprite from: ", sprite_path)
+		var texture = load(sprite_path)
 		if texture:
-			print("Texture loaded successfully")
 			fish_sprite.texture = texture
+			print("✅ Fish sprite loaded successfully")
 		else:
-			print("Failed to load texture")
+			print("⚠️ Failed to load fish texture from: ", sprite_path)
 	else:
-		print("No sprite_path in current_fish")
+		print("⚠️ No sprite_path found in current_fish")
 
 func update_ui() -> void:
-	if GlobalData.current_fish.is_empty():
-		GlobalData.current_fish = GlobalData.roll_random_fish()
-		GlobalData.rod_durability = 100
+	if _gd == null:
+		push_error("GlobalData autoload missing. Check Project Settings > Autoload.")
+		return
 	
-	rod_durability_label.text = "Rod: " + str(GlobalData.rod_durability) + "%"
+	rod_durability_label.text = "Rod: " + str(_gd.get("rod_durability")) + "%"
+	var fish := _gd.get("current_fish") as Dictionary
+	
+	# Color-code fish name by rarity
 	var rarity_color = ""
-	if GlobalData.current_fish.has("rarity"):
-		match GlobalData.current_fish["rarity"]:
+	if fish.has("rarity"):
+		match fish.get("rarity"):
 			"common":
 				rarity_color = "[color=gray]"
 			"uncommon":
@@ -103,18 +108,20 @@ func update_ui() -> void:
 			"legendary":
 				rarity_color = "[color=gold]"
 	
-	fish_name_label.text = rarity_color + GlobalData.current_fish["name"] + "[/color]"
+	fish_name_label.text = rarity_color + str(fish.get("name", "Unknown Fish")) + "[/color]"
 	fish_name_label.bbcode_enabled = true
-	fish_level_label.text = "Lv: " + str(GlobalData.current_fish["level"])
-	fish_health_label.text = "HP: " + str(GlobalData.current_fish["health"]) + "/" + str(GlobalData.current_fish["max_health"])
+	fish_level_label.text = "Lv: " + str(fish.get("level", 1))
+	fish_health_label.text = "HP: %s/%s" % [str(fish.get("health", 0)), str(fish.get("max_health", 0))]
 
 func on_fight_pressed() -> void:
 	choice_buttons.visible = false
 	prep_timer_ui.visible = true
 	is_prep_phase = true
-	prep_timer = 0.0	
+	prep_timer = 0.0
 
 func on_flee_pressed() -> void:
+	# Restore custom cursor when returning to game
+	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	get_tree().change_scene_to_file("res://scenes/game.tscn")
 
 func _input(event: InputEvent) -> void:
@@ -228,7 +235,8 @@ func end_turn() -> void:
 		damage = int(wpm * (accuracy / 100.0))
 		if _gd != null:
 			var fish := _gd.get("current_fish") as Dictionary
-			fish["health"] = int(fish.get("health", 0)) - damage
+			var new_health = int(fish.get("health", 0)) - damage
+			fish["health"] = max(0, new_health)  # Clamp health to minimum of 0
 			_gd.set("current_fish", fish)
 		result_label.text = "Hit!"
 		damage_label.text = "Damage: " + str(damage) + "\nWPM: " + str(int(wpm)) + " | Accuracy: " + str(int(accuracy)) + "%"
@@ -246,10 +254,13 @@ func on_continue_pressed() -> void:
 	result_ui.visible = false
 	
 	if _gd == null:
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		get_tree().change_scene_to_file("res://scenes/game.tscn")
 		return
 	var fish := _gd.get("current_fish") as Dictionary
 	if int(fish.get("health", 0)) <= 0:
+		# Fish defeated! Restore custom cursor
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		get_tree().change_scene_to_file("res://scenes/game.tscn")
 		return
 	
@@ -262,6 +273,7 @@ func fish_turn() -> void:
 	continue_button.visible = false
 
 	if _gd == null:
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		get_tree().change_scene_to_file("res://scenes/game.tscn")
 		return
 	var fish := _gd.get("current_fish") as Dictionary
@@ -271,7 +283,8 @@ func fish_turn() -> void:
 	var wpm_reduction = int(wpm * 0.1)
 	fish_damage = max(1, fish_damage - wpm_reduction)
 	
-	_gd.set("rod_durability", int(_gd.get("rod_durability")) - fish_damage)
+	var new_rod_durability = int(_gd.get("rod_durability")) - fish_damage
+	_gd.set("rod_durability", max(0, new_rod_durability))  # Clamp rod durability to minimum of 0
 	update_ui()
 	
 	result_ui.visible = true
@@ -282,6 +295,8 @@ func fish_turn() -> void:
 	result_ui.visible = false
 	
 	if int(_gd.get("rod_durability")) <= 0:
+		# Rod broke! Restore custom cursor
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		get_tree().change_scene_to_file("res://scenes/game.tscn")
 	else:
 		start_combat()

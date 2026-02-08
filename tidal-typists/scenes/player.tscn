@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dituidmp5in8h" path="res://scripts/player.gd" id="1_g2els"]
 [ext_resource type="SpriteFrames" uid="uid://kdc5il0i3y3p" path="res://assets/characters/male_animations.tres" id="2_g2els"]
+[ext_resource type="Script" uid="uid://5k2tq4n1n4rb" path="res://scripts/FishingSystem.gd" id="3_qhqgy"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g2els"]
 radius = 5.0
@@ -15,7 +16,6 @@ position = Vector2(0, -9)
 scale = Vector2(0.50390625, 0.43097016)
 sprite_frames = ExtResource("2_g2els")
 animation = &"idle"
-frame_progress = 0.24857686
 
 [node name="NicknameLabel" type="Label" parent="." unique_id=-1189472823]
 offset_left = -20.0
@@ -33,3 +33,6 @@ vertical_alignment = 1
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1152634246]
 position = Vector2(0, -5)
 shape = SubResource("CircleShape2D_g2els")
+
+[node name="FishingSystem" type="Node" parent="." unique_id=1827564177]
+script = ExtResource("3_qhqgy")
