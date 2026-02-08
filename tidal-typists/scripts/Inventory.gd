@@ -30,9 +30,6 @@ func _ready() -> void:
 	
 	slot_pressed.connect(Callable(self, "_on_slot_clicked"))
 	
-	# Start hidden (will be 1ed by backpack)
-	# Start hidden
-
 	# Start hidden (will be opened by backpack)
 	visible = false
 	print("  - Inventory ready")
@@ -275,18 +272,40 @@ func save_to_global() -> void:
 	if gd != null:
 		gd.saved_inventory_items = _items.duplicate()
 		gd.has_initialized_inventory = true
+		print("💾 Inventory.save_to_global() - Saved ", _items.size(), " items to GlobalData")
 
 func load_from_global() -> bool:
 	var gd = get_node_or_null("/root/GlobalData")
 	if gd != null:
+		print("\n🔍 === LOADING INVENTORY FROM GLOBAL ===")
+		print("  - has_initialized_inventory: ", gd.has_initialized_inventory)
+		print("  - saved_inventory_items size: ", gd.saved_inventory_items.size())
+		print("  - _items size: ", _items.size())
+		
 		if gd.has_initialized_inventory:
 			if gd.saved_inventory_items.size() == _items.size():
 				_items = []
-				for item in gd.saved_inventory_items:
+				for i in range(gd.saved_inventory_items.size()):
+					var item = gd.saved_inventory_items[i]
+					if item != null:
+						print("    - Slot ", i, ": ", item.get("name", "Unknown") if item is Dictionary else str(item))
+					else:
+						print("    - Slot ", i, ": [empty]")
+					
 					if item is Dictionary:
 						_items.append(item.duplicate())
 					else:
 						_items.append(item)
 				refresh()
+				print("✅ Inventory loaded successfully")
+				print("=== INVENTORY LOAD COMPLETE ===\n")
 				return true
+			else:
+				print("⚠️ Size mismatch! Global: ", gd.saved_inventory_items.size(), " Local: ", _items.size())
+		else:
+			print("⚠️ Inventory not initialized in GlobalData")
+	else:
+		print("❌ GlobalData not found!")
+	
+	print("=== INVENTORY LOAD FAILED ===\n")
 	return false

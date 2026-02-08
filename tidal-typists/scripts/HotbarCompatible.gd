@@ -111,10 +111,26 @@ func _input(event: InputEvent) -> void:
 			elif key_code == KEY_0 and _slots.size() >= 10:
 				select_slot(9)
 				get_viewport().set_input_as_handled()
-			# Use item (E key)
+			# E key - Use current item if it's backpack or map
 			elif key_code == KEY_E:
-				use_current_item()
-				get_viewport().set_input_as_handled()
+				var current_item = get_item(_current_slot)
+				if current_item is Dictionary:
+					var action = current_item.get("action", "")
+					
+					# E key works for backpack and map
+					if action == "open_inventory":
+						open_inventory()
+						get_viewport().set_input_as_handled()
+					elif action == "open_map":
+						open_map()
+						get_viewport().set_input_as_handled()
+					else:
+						# Not a tool item - E doesn't work for regular items
+						print("⚠️ E key is reserved for backpack and map only!")
+						get_viewport().set_input_as_handled()
+				else:
+					print("⚠️ E key is reserved for backpack and map only!")
+					get_viewport().set_input_as_handled()
 	
 	# Mouse wheel scrolling
 	if event is InputEventMouseButton and not event.pressed:

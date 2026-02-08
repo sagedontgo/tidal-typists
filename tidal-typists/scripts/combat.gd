@@ -55,8 +55,15 @@ var last_wpm = 0
 var last_accuracy = 0.0
 
 func _ready() -> void:
+	# Set cursor to visible for combat UI
+	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+	
+	# Don't modify the label - it already has autowrap_mode=3 in the scene
+	# The issue is that the text is already wrapped, it just needs proper room
+	
 	update_ui()
 	load_fish_sprite()
+	load_player_sprite()
 	
 	prep_timer_ui.visible = false
 	combat_ui.visible = false
@@ -116,20 +123,24 @@ func load_player_sprite() -> void:
 	var gender = _gd.get("player_gender")
 	var sprite_path = ""
 	
-	if gender == "Male":
+	if gender == "Male" or gender == "Male (placeholder)":
 		sprite_path = "res://assets/characters/male_sprite.png"
-	elif gender == "Female":
+	elif gender == "Female" or gender == "Female (placeholder)":
 		sprite_path = "res://assets/characters/female_sprite.png"
 	else:
 		sprite_path = "res://assets/characters/male_sprite.png"
 	
-	var texture = load(sprite_path)
-	if texture:
-		player_sprite.texture = texture
+	var full_texture = load(sprite_path)
+	if full_texture:
+		var atlas = AtlasTexture.new()
+		atlas.atlas = full_texture
+		atlas.region = Rect2(0, 0, 64, 64)
+		
+		player_sprite.texture = atlas
 		print("✅ Player sprite loaded: ", sprite_path)
 	else:
 		print("⚠️ Failed to load player sprite: ", sprite_path)
-		
+			
 func update_ui() -> void:
 	if _gd == null:
 		return
@@ -192,6 +203,10 @@ func _process(delta: float) -> void:
 
 func start_combat() -> void:
 	combat_ui.visible = true
+	
+	# Hide continue button when typing challenge starts
+	continue_button.visible = false
+	result_ui.visible = false
 	
 	if _gd == null:
 		return
@@ -287,34 +302,28 @@ func show_player_result() -> void:
 	var message = ""
 	if last_accuracy >= 70:
 		var hit_messages = [
-			"You hit %s for %d damage with %d WPM at %d%% Accuracy!",
-			"The fish thrashes! You deal %d damage. (%d WPM, %d%% Accuracy)",
-			"Your strike lands! %d damage dealt to %s. (%d WPM at %d%%)",
-			"Critical hit! %s takes %d damage! (%d WPM, %d%% Accuracy)",
-			"The %s reels in pain! %d damage! (%d WPM at %d%%)"
+			"You hit %s for %d damage! (%d WPM, %d%% Acc)",
+			"Fish takes %d damage! (%d WPM, %d%%)",
+			"%d damage to %s! (%d WPM, %d%%)",
+			"%s takes %d damage! (%d WPM, %d%%)"
 		]
 		var selected = hit_messages[randi() % hit_messages.size()]
 		
-		if selected.count("%s") == 2:
+		# Simplified formatting - less text means less overflow
+		if selected.begins_with("You") or selected.begins_with("%d damage to"):
 			message = selected % [fish_name, player_damage, last_wpm, int(last_accuracy)]
-		elif selected.count("%s") == 1 and selected.find("%s") < selected.find("%d"):
-			message = selected % [fish_name, player_damage, last_wpm, int(last_accuracy)]
+		elif selected.begins_with("Fish"):
+			message = selected % [player_damage, last_wpm, int(last_accuracy)]
 		else:
-			message = selected % [player_damage, fish_name, last_wpm, int(last_accuracy)]
+			message = selected % [fish_name, player_damage, last_wpm, int(last_accuracy)]
 	else:
 		var miss_messages = [
-			"You missed! %d WPM at %d%% Accuracy.",
-			"The fish dodges! %d WPM, %d%% Accuracy.",
-			"Your strike misses! (%d WPM at %d%%)",
-			"Too slow! %d WPM at %d%% Accuracy.",
-			"The %s evades your attack! (%d WPM, %d%%)"
+			"Miss! (%d WPM, %d%% Acc)",
+			"Fish dodges! (%d WPM, %d%%)",
+			"Too slow! (%d WPM, %d%%)"
 		]
 		var selected = miss_messages[randi() % miss_messages.size()]
-		
-		if selected.count("%s") == 1:
-			message = selected % [fish_name, last_wpm, int(last_accuracy)]
-		else:
-			message = selected % [last_wpm, int(last_accuracy)]
+		message = selected % [last_wpm, int(last_accuracy)]
 	
 	result_textbox.text = message
 	result_textbox_sprite.visible = true
@@ -326,10 +335,12 @@ func on_continue_pressed() -> void:
 	if is_showing_player_result:
 		is_showing_player_result = false
 		result_ui.visible = false
+		continue_button.visible = false
 		fish_turn()
 		return
 	
 	result_ui.visible = false
+	continue_button.visible = false
 	
 	if _gd == null:
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
@@ -354,7 +365,7 @@ func add_fish_to_inventory(fish: Dictionary) -> void:
 	if _gd == null:
 		return
 	
-	print("🐟 Fish defeated! Adding to inventory...")
+	print("\n🐟 === ADDING FISH TO INVENTORY ===")
 	
 	var fish_item = {
 		"name": fish.get("name", "Unknown Fish"),
@@ -366,19 +377,29 @@ func add_fish_to_inventory(fish: Dictionary) -> void:
 		"description": "A %s fish caught at level %d." % [fish.get("rarity", "common"), fish.get("level", 1)]
 	}
 	
-	if _gd.saved_inventory_items.size() > 0:
-		var added = false
-		for i in range(_gd.saved_inventory_items.size()):
-			if _gd.saved_inventory_items[i] == null:
-				_gd.saved_inventory_items[i] = fish_item
-				added = true
-				print("✅ Added %s to inventory slot %d" % [fish_item["name"], i])
-				break
-		
-		if not added:
-			print("⚠️ Inventory full! Fish not added.")
-	else:
-		print("⚠️ Inventory not initialized, fish not added.")
+	print("📦 Current inventory size: ", _gd.saved_inventory_items.size())
+	print("📊 Has initialized: ", _gd.has_initialized_inventory)
+	
+	# Safety: Ensure array exists
+	if _gd.saved_inventory_items.size() == 0:
+		print("⚠️ Creating emergency inventory - this means inventory wasn't saved!")
+		_gd.saved_inventory_items.resize(9)
+		for i in range(9):
+			_gd.saved_inventory_items[i] = null
+	
+	# Find empty slot
+	var added = false
+	for i in range(_gd.saved_inventory_items.size()):
+		if _gd.saved_inventory_items[i] == null:
+			_gd.saved_inventory_items[i] = fish_item
+			added = true
+			print("✅ Added fish to slot %d" % i)
+			break
+	
+	if not added:
+		print("⚠️ Inventory full!")
+	
+	print("=== FISH ADDITION COMPLETE ===\n")
 
 func fish_turn() -> void:
 	if _gd == null:
@@ -394,12 +415,11 @@ func fish_turn() -> void:
 	_gd.set("rod_durability", max(0, new_rod_durability))
 	update_ui()
 	
+	# Shorter fish messages
 	var fish_messages = [
-		"The fish bites back! Your rod takes %d damage.",
-		"The %s thrashes! Rod durability -%d.",
-		"Counter-attack! The fish deals %d damage to your rod!",
-		"The %s fights back fiercely! -%d rod durability.",
-		"Your rod creaks under pressure! %d damage taken!"
+		"Fish strikes! Rod -%d",
+		"%s attacks! -%d durability",
+		"Rod takes %d damage!"
 	]
 	
 	var selected = fish_messages[randi() % fish_messages.size()]

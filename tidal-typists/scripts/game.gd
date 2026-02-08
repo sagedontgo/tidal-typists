@@ -180,6 +180,10 @@ func start_fishing(click_pos: Vector2) -> void:
 	player.can_move = false
 	cast_position = get_viewport().get_canvas_transform().affine_inverse() * click_pos
 	
+	# Trigger fishing animation on player
+	if player.has_method("start_fishing"):
+		player.start_fishing()
+	
 	casting_label.visible = true
 	waiting_label.visible = false
 	
@@ -224,6 +228,11 @@ func cancel_fishing() -> void:
 		waiting_label.visible = false
 		casting_label.visible = false
 		player.can_move = true
+		
+		# Stop fishing animation on player
+		if player.has_method("stop_fishing"):
+			player.stop_fishing()
+		
 		print("❌ Fishing cancelled")
 
 func on_fish_bite() -> void:
@@ -245,20 +254,36 @@ func catch_fish() -> void:
 	GlobalData.current_fish = GlobalData.roll_random_fish()
 	GlobalData.rod_durability = 100
 	
-	await SceneTransition.fade_to_scene("res://scenes/combat.tscn")
-	
-	# Save inventory/hotbar state before transitioning to combat
+	# *** CRITICAL FIX: Save inventory/hotbar BEFORE any scene transition ***
+	print("\n💾 === SAVING INVENTORY BEFORE COMBAT ===")
 	if inventory != null and inventory.has_method("save_to_global"):
 		inventory.save_to_global()
-		print("💾 Saved inventory from game.gd catch_fish()")
+		print("✅ Saved inventory to GlobalData")
+		
+		# Debug: Show what was saved
+		var gd = get_node_or_null("/root/GlobalData")
+		if gd:
+			print("📦 Inventory saved with ", gd.saved_inventory_items.size(), " slots:")
+			for i in range(gd.saved_inventory_items.size()):
+				var item = gd.saved_inventory_items[i]
+				if item != null:
+					var item_name = item.get("name", "Unknown") if item is Dictionary else str(item)
+					print("  Slot %d: %s" % [i, item_name])
+	else:
+		print("❌ ERROR: Could not save inventory!")
+	
 	if hotbar != null and hotbar.has_method("save_to_global"):
 		hotbar.save_to_global()
-		print("💾 Saved hotbar from game.gd catch_fish()")
+		print("✅ Saved hotbar to GlobalData")
+	else:
+		print("❌ ERROR: Could not save hotbar!")
+	print("=== SAVE COMPLETE ===\n")
 	
 	# Switch to normal cursor for combat UI
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
-	get_tree().change_scene_to_file("res://scenes/combat.tscn")
+	# *** FIX: Use only ONE scene transition method ***
+	await SceneTransition.fade_to_scene("res://scenes/combat.tscn")
 
 func _on_hotbar_slot_changed(slot_index: int):
 	if hotbar == null:

@@ -22,45 +22,59 @@ func _ready() -> void:
 		nickname_label.text = gd.get("player_nickname")
 	else:
 		nickname_label.text = "Player"
-	
-	# Connect to hotbar item usage
-	connect_to_hotbar()
 
-func connect_to_hotbar():
-	"""Connect to hotbar's item_used signal"""
-	await get_tree().process_frame
-	
+func has_fishing_rod_equipped() -> bool:
+	"""Check if player has a fishing rod in their hotbar"""
 	var scene = get_tree().current_scene
 	if scene != null:
 		var hud = scene.get_node_or_null("HUD")
 		if hud != null:
 			var hotbar = hud.get_node_or_null("Hotbar")
-			if hotbar != null and hotbar.has_signal("item_used"):
-				if not hotbar.item_used.is_connected(_on_hotbar_item_used):
-					hotbar.item_used.connect(_on_hotbar_item_used)
-					print("✅ Connected to hotbar item_used signal")
+			if hotbar != null and hotbar.has_method("get_current_item"):
+				var current_item = hotbar.get_current_item()
+				if current_item is Dictionary:
+					return current_item.get("type", "") == "fishing_rod"
+	return false
 
-func _on_hotbar_item_used(slot_index: int, item):
-	"""Called when player presses E on a hotbar item"""
-	if item == null:
-		return
+func is_inventory_open() -> bool:
+	"""Check if inventory UI is currently open"""
+	var scene = get_tree().current_scene
+	if scene != null:
+		var hud = scene.get_node_or_null("HUD")
+		if hud != null:
+			var inventory = hud.get_node_or_null("Inventory")
+			if inventory != null:
+				return inventory.visible
+	return false
+
+func is_on_water() -> bool:
+	"""Check if player is standing on water tile"""
+	var tile_map = get_tree().current_scene.find_child("WaterTileMap", true, false)
+	if tile_map == null:
+		tile_map = get_tree().current_scene.find_child("Water", true, false)
 	
-	# Check if it's a fishing rod
-	var item_type = ""
-	if item is Dictionary:
-		item_type = item.get("type", "")
+	if tile_map == null:
+		print("⚠️ Water TileMap not found!")
+		return false
 	
-	if item_type == "fishing_rod":
-		use_fishing_rod()
-	elif item_type == "bait":
-		print("🪱 Used bait (not implemented yet)")
-	else:
-		print("Used item: ", item)
+	# Get the tile position under the player
+	var player_tile_pos = tile_map.local_to_map(tile_map.to_local(global_position))
+	
+	# Check if there's a tile at this position
+	var tile_data = tile_map.get_cell_tile_data(player_tile_pos)
+	
+	# If there's a tile, we're on water
+	return tile_data != null
 
 func use_fishing_rod():
-	"""Use the fishing rod to start fishing"""
+	"""Use the fishing rod to start fishing - only works on water"""
 	if is_fishing:
 		print("⚠️ Already fishing!")
+		return
+	
+	# Check if we're on water
+	if not is_on_water():
+		print("⚠️ You need to be on water to fish!")
 		return
 	
 	# Check if we have the FishingSystem node
@@ -68,7 +82,7 @@ func use_fishing_rod():
 		print("❌ FishingSystem not found!")
 		return
 	
-	# Start fishing through the system
+	# Start fishing through the system (this calls start_fishing() below which plays animation)
 	fishing_system.start_fishing()
 
 func load_character_sprite():
@@ -195,9 +209,63 @@ func get_fishing_direction_name() -> String:
 	else:
 		return "down" if last_direction.y > 0 else "up"
 
+func _save_inventory_and_hotbar():
+	"""Helper function to save inventory before combat transitions"""
+	var scene = get_tree().current_scene
+	if scene == null:
+		print("⚠️ Can't save - no scene")
+		return
+	
+	var hud = scene.get_node_or_null("HUD")
+	if hud == null:
+		print("⚠️ Can't save - no HUD")
+		return
+	
+	var inventory = hud.get_node_or_null("Inventory")
+	var hotbar = hud.get_node_or_null("Hotbar")
+	
+	# Handle inventory wrapper
+	if inventory != null and not (inventory is Inventory):
+		var inv_child = inventory.find_child("Inventory", true, false)
+		if inv_child is Inventory:
+			inventory = inv_child
+	
+	print("\n💾 === SAVING BEFORE COMBAT (from player test) ===")
+	
+	if inventory != null and inventory.has_method("save_to_global"):
+		inventory.save_to_global()
+		print("✅ Saved inventory")
+	else:
+		print("❌ Could not save inventory")
+	
+	if hotbar != null and hotbar.has_method("save_to_global"):
+		hotbar.save_to_global()
+		print("✅ Saved hotbar")
+	else:
+		print("❌ Could not save hotbar")
+	
+	print("=== SAVE COMPLETE ===\n")
+
 func _input(event: InputEvent) -> void:
+	# Left click for fishing (only when fishing rod is equipped and inventory is closed)
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			# Don't trigger fishing if inventory is open
+			if not is_inventory_open():
+				if has_fishing_rod_equipped() and not is_fishing:
+					use_fishing_rod()
+		
+		# Right click to cancel fishing
+		elif event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
+			if is_fishing and fishing_system != null:
+				fishing_system.stop_fishing()
+				print("🚫 Fishing cancelled by player")
+	
 	# Backslash for instant combat test
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_BACKSLASH:
+		# *** FIX: Save inventory BEFORE test fight ***
+		_save_inventory_and_hotbar()
+		
 		var gd := get_node_or_null("/root/GlobalData")
 		if gd != null:
 			gd.set("has_saved_player_position", true)
