@@ -259,12 +259,49 @@ func on_continue_pressed() -> void:
 		return
 	var fish := _gd.get("current_fish") as Dictionary
 	if int(fish.get("health", 0)) <= 0:
-		# Fish defeated! Restore custom cursor
+		# Fish defeated! Add to inventory
+		add_fish_to_inventory(fish)
+		
+		# Restore custom cursor
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		get_tree().change_scene_to_file("res://scenes/game.tscn")
 		return
 	
 	fish_turn()
+
+func add_fish_to_inventory(fish: Dictionary) -> void:
+	"""Add the caught fish to the player's inventory"""
+	if _gd == null:
+		return
+	
+	print("🐟 Fish defeated! Adding to inventory...")
+	
+	# Create fish item for inventory
+	var fish_item = {
+		"name": fish.get("name", "Unknown Fish"),
+		"type": "fish",
+		"rarity": fish.get("rarity", "common"),
+		"level": fish.get("level", 1),
+		"icon": load(fish.get("sprite_path", "")),  # Load the fish sprite as icon
+		"sprite_path": fish.get("sprite_path", ""),
+		"description": "A %s fish caught at level %d." % [fish.get("rarity", "common"), fish.get("level", 1)]
+	}
+	
+	# Add to saved inventory (GlobalData will persist it)
+	if _gd.saved_inventory_items.size() > 0:
+		# Find first empty slot
+		var added = false
+		for i in range(_gd.saved_inventory_items.size()):
+			if _gd.saved_inventory_items[i] == null:
+				_gd.saved_inventory_items[i] = fish_item
+				added = true
+				print("✅ Added %s to inventory slot %d" % [fish_item["name"], i])
+				break
+		
+		if not added:
+			print("⚠️ Inventory full! Fish not added.")
+	else:
+		print("⚠️ Inventory not initialized, fish not added.")
 
 func fish_turn() -> void:
 	_in_fish_attack = true

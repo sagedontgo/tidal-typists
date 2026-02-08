@@ -29,20 +29,20 @@ func _process(_delta: float) -> void:
 func _resolve_player() -> void:
 	_player = null
 
-	# 1) Prefer an explicit NodePath if provided.
+	
 	if player_path != NodePath():
 		var p := get_node_or_null(player_path)
 		if p is Node2D:
 			_player = p
 			return
 
-	# 2) Try group-based lookup (works even with instanced HUD).
+	
 	var g := get_tree().get_first_node_in_group("player")
 	if g is Node2D:
 		_player = g
 		return
 
-	# 3) Fallback: search by name under the current scene.
+	
 	var cs := get_tree().current_scene
 	if cs == null:
 		return
@@ -57,14 +57,14 @@ func _resolve_tilemap() -> void:
 	if cs == null:
 		return
 
-	# 1) Prefer explicit NodePath if provided.
+	
 	if tilemap_path != NodePath():
 		var t := get_node_or_null(tilemap_path)
 		if t != null:
 			_tilemap = t
 			return
 
-	# 2) Common names in your current `game.tscn`.
+	
 	var layer1 := cs.find_child("Layer1", true, false)
 	if layer1 != null:
 		_tilemap = layer1
@@ -82,7 +82,7 @@ func _try_update_world_bounds() -> void:
 	if _tilemap == null:
 		return
 
-	# Duck-typed: we only proceed if the node looks like a TileMap/TileMapLayer.
+	
 	if not _tilemap.has_method("get_used_rect"):
 		return
 
@@ -90,7 +90,7 @@ func _try_update_world_bounds() -> void:
 	if used.size.x <= 0 or used.size.y <= 0:
 		return
 
-	# Determine approximate world bounds in global coordinates.
+	
 	var cell_min: Vector2i = used.position
 	var cell_max: Vector2i = used.position + used.size
 
@@ -101,7 +101,7 @@ func _try_update_world_bounds() -> void:
 		local_min = _tilemap.map_to_local(cell_min)
 		local_max = _tilemap.map_to_local(cell_max)
 
-	# Expand by one tile so the rect covers the outer edges (best-effort).
+	
 	var tile_size := Vector2(16, 16)
 	var tile_set: TileSet = null
 	if _tilemap is TileMapLayer:

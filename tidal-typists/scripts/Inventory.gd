@@ -16,9 +16,13 @@ var _held_from_slot_index := -1
 var _held_label: Label
 var _held_icon: TextureRect
 
+# Tooltip reference
+var tooltip: Panel = null
+
 func _ready() -> void:
 	print("🔧 Inventory._ready() called - Node: ", get_path())
 	_setup_held_visual_nodes()
+	_setup_tooltip()
 	_cache_slots()
 	_items.resize(_slots.size())
 	print("  - Resized _items to ", _items.size(), " slots (all null)")
@@ -26,47 +30,72 @@ func _ready() -> void:
 	
 	slot_pressed.connect(Callable(self, "_on_slot_clicked"))
 	
+<<<<<<< HEAD
 	# Start hidden (will be 1ed by backpack)
+=======
+	# Start hidden
+>>>>>>> 29eab4709ba7a8ad5aa47db8423cca844b327f5e
 	visible = false
-	print("  - Inventory ready, waiting for game.gd to load saved data")
+	print("  - Inventory ready")
+
+func _setup_tooltip() -> void:
+	"""Create tooltip - script will handle creating its own UI"""
+	if tooltip != null:
+		return
+	
+	print("📋 Creating tooltip panel...")
+	
+	# Create empty panel
+	tooltip = Panel.new()
+	tooltip.name = "ItemTooltip"
+	tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	tooltip.z_index = 1000
+	tooltip.visible = false
+	
+	# Add to scene
+	add_child(tooltip)
+	
+	# Load script - the script's _ready() will create the UI
+	var script = load("res://scripts/ItemTooltip.gd")
+	if script:
+		tooltip.set_script(script)
+		print("✅ Tooltip script attached")
+	else:
+		push_error("❌ Failed to load tooltip script")
 
 func add_fishing_items():
 	"""Add starting fishing items to inventory"""
+	var basic_rod_icon = load("res://assets/items/basic_rod.png")
+	var basic_bait_icon = load("res://assets/items/basic_bait.png")
 	
-	# Load your pixel art assets
-	var basic_rod_icon = load("res://assets/items/basic_rod.png")  # Adjust path!
-	var basic_bait_icon = load("res://assets/items/basic_bait.png")  # Adjust path!
-	
-	# Add Basic Fishing Rod
 	add_item({
 		"name": "Basic Rod",
 		"type": "fishing_rod",
 		"icon": basic_rod_icon,
 		"power": 10,
-		"durability": 100
+		"durability": 100,
+		"description": "A simple fishing rod for beginners."
 	})
 	
-	# Add Basic Bait (stackable)
 	add_item({
 		"name": "Basic Bait",
 		"type": "bait",
 		"icon": basic_bait_icon,
 		"count": 20,
 		"stackable": true,
-		"max_stack": 99
+		"max_stack": 99,
+		"description": "Standard bait for catching fish."
 	})
 	
 	print("✅ Added fishing items to inventory")
 
 func _input(event: InputEvent) -> void:
-	# Prevent WASD and arrow keys from moving focus in inventory
 	if visible and event is InputEventKey:
 		if event.is_action("ui_up") or event.is_action("ui_down") or \
 		   event.is_action("ui_left") or event.is_action("ui_right"):
 			get_viewport().set_input_as_handled()
 
 func _process(_delta: float) -> void:
-	# Update held item visual position to follow mouse cursor
 	if _held_icon != null and _held_icon.visible:
 		_held_icon.global_position = get_viewport().get_mouse_position() + HELD_ITEM_OFFSET
 	if _held_label != null and _held_label.visible:
@@ -76,18 +105,16 @@ func _setup_held_visual_nodes() -> void:
 	if _held_icon != null:
 		return
 	
-	# Create TextureRect to show item icon when holding
 	_held_icon = TextureRect.new()
 	_held_icon.name = "HeldItemIcon"
 	_held_icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_held_icon.z_index = 999
 	_held_icon.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	_held_icon.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	_held_icon.custom_minimum_size = Vector2(32, 32)  # Icon size
+	_held_icon.custom_minimum_size = Vector2(32, 32)
 	_held_icon.visible = false
 	add_child(_held_icon)
 	
-	# Create Label as fallback for items without icons
 	_held_label = Label.new()
 	_held_label.name = "HeldItemLabel"
 	_held_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -97,33 +124,28 @@ func _setup_held_visual_nodes() -> void:
 	
 	set_process(true)
 
-# NEW: Open/close inventory (called by backpack item)
 func toggle_inventory():
 	if visible and _held_item != null:
-		# Try to return held item before closing
 		var empty_index := _find_first_empty_slot()
 		if empty_index == -1:
-			return  # Keep open if can't return item
+			return
 		set_item(empty_index, _held_item)
 		_clear_held()
 	
 	visible = not visible
 	_update_held_visual()
 	
-	# Switch cursor mode when opening/closing inventory
-	if visible:
-		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)  # Show normal cursor
-		_hide_custom_cursor(true)  # Hide custom cursor sprite
-		print("Inventory opened - Normal cursor active")
-	else:
-		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)  # Hide OS cursor
-		_hide_custom_cursor(false)  # Show custom cursor sprite
-		print("Inventory closed - Custom cursor active")
+	if not visible and tooltip != null:
+		tooltip.visible = false
 	
-	print("Inventory ", "opened" if visible else "closed")
+	if visible:
+		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+		_hide_custom_cursor(true)
+	else:
+		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+		_hide_custom_cursor(false)
 
 func _hide_custom_cursor(should_hide: bool) -> void:
-	# Find and hide/show the custom cursor sprite
 	var scene = get_tree().current_scene
 	if scene != null:
 		var cursor = scene.get_node_or_null("Cursor")
@@ -134,21 +156,16 @@ func _update_held_visual() -> void:
 	if _held_icon == null or _held_label == null:
 		return
 	
-	# If we have an item being held
 	if visible and _held_item != null:
-		# Check if item has an icon (texture)
 		if _held_item is Dictionary and _held_item.has("icon") and _held_item["icon"] != null:
-			# Show the icon
 			_held_icon.texture = _held_item["icon"]
 			_held_icon.visible = true
 			_held_label.visible = false
 		else:
-			# Show text label as fallback
 			_held_icon.visible = false
 			_held_label.visible = true
 			_held_label.text = _item_to_text(_held_item)
 	else:
-		# Nothing held, hide both
 		_held_icon.visible = false
 		_held_label.visible = false
 
@@ -176,6 +193,9 @@ func _cache_slots() -> void:
 		var slot = _slots[i]
 		if slot.has_method("setup"):
 			slot.setup(self, i)
+		# Set tooltip reference
+		if tooltip != null and "tooltip" in slot:
+			slot.tooltip = tooltip
 
 func refresh() -> void:
 	for i in range(_slots.size()):
@@ -233,7 +253,6 @@ func _on_slot_pressed(slot_index: int) -> void:
 	slot_pressed.emit(slot_index, get_item(slot_index))
 	
 func _on_slot_clicked(slot_index: int, item) -> void:
-	# Click-to-pick, click-to-place
 	if _held_item == null:
 		if item == null:
 			return
@@ -244,7 +263,6 @@ func _on_slot_clicked(slot_index: int, item) -> void:
 		_update_held_visual()
 		return
 	
-	# Place held item into clicked slot
 	var target_item = get_item(slot_index)
 	set_item(slot_index, _held_item)
 	_held_item = target_item
@@ -253,56 +271,23 @@ func _on_slot_clicked(slot_index: int, item) -> void:
 	else:
 		_update_held_visual()
 
-# Save/Load inventory state to GlobalData
 func save_to_global() -> void:
 	var gd = get_node_or_null("/root/GlobalData")
 	if gd != null:
 		gd.saved_inventory_items = _items.duplicate()
 		gd.has_initialized_inventory = true
-		print("💾 === SAVING INVENTORY TO GLOBALDATA ===")
-		print("  - Total slots: ", _items.size())
-		print("  - has_initialized_inventory set to: true")
-		# Show first few items being saved
-		for i in range(min(5, _items.size())):
-			if _items[i] != null:
-				var item_name = _items[i].get("name", "Unknown") if _items[i] is Dictionary else str(_items[i])
-				print("    Slot ", i, ": ", item_name)
-			else:
-				print("    Slot ", i, ": empty")
-		print("=== SAVE COMPLETE ===\n")
 
 func load_from_global() -> bool:
 	var gd = get_node_or_null("/root/GlobalData")
-	print("📥 load_from_global called")
-	print("  - GlobalData exists: ", gd != null)
 	if gd != null:
-		print("  - has_initialized_inventory: ", gd.has_initialized_inventory)
-		print("  - saved_inventory_items size: ", gd.saved_inventory_items.size())
-		print("  - current _items size: ", _items.size())
-		
 		if gd.has_initialized_inventory:
-			# Restore items if array sizes match
 			if gd.saved_inventory_items.size() == _items.size():
-				# Use deep copy to avoid reference issues
 				_items = []
 				for item in gd.saved_inventory_items:
 					if item is Dictionary:
 						_items.append(item.duplicate())
 					else:
 						_items.append(item)
-				
 				refresh()
-				print("✅ Loaded inventory items from GlobalData")
-				# Debug: print first few items
-				for i in range(min(5, _items.size())):
-					if _items[i] != null:
-						var item_name = _items[i].get("name", "Unknown") if _items[i] is Dictionary else str(_items[i])
-						print("    Slot ", i, ": ", item_name)
-					else:
-						print("    Slot ", i, ": (empty)")
 				return true
-			else:
-				print("⚠️ Inventory size mismatch, skipping load (saved:", gd.saved_inventory_items.size(), " vs current:", _items.size(), ")")
-		else:
-			print("  - No previous inventory initialization found")
 	return false
