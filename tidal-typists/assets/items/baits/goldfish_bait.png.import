@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://25jgk0f0eauh"
-path="res://.godot/imported/basic_rod.png-1d8b581a9fc9d9433dd7b5840aa78e46.ctex"
+uid="uid://0smoje3mt27h"
+path="res://.godot/imported/goldfish_bait.png-a84be1526e860fc04b7a830eda67ba5d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/items/basic_rod.png"
-dest_files=["res://.godot/imported/basic_rod.png-1d8b581a9fc9d9433dd7b5840aa78e46.ctex"]
+source_file="res://assets/items/baits/goldfish_bait.png"
+dest_files=["res://.godot/imported/goldfish_bait.png-a84be1526e860fc04b7a830eda67ba5d.ctex"]
 
 [params]
 
@@ -37,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

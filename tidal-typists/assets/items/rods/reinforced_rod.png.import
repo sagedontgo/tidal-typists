@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://prwfihvnyc72"
-path="res://.godot/imported/basic_bait.png-b3ceba5e4cf18e7a7281dccc6d9d8bd9.ctex"
+uid="uid://yfmy88f7ds33"
+path="res://.godot/imported/reinforced_rod.png-cadb32913ce3068e6f8bdf9253bb2832.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/items/basic_bait.png"
-dest_files=["res://.godot/imported/basic_bait.png-b3ceba5e4cf18e7a7281dccc6d9d8bd9.ctex"]
+source_file="res://assets/items/rods/reinforced_rod.png"
+dest_files=["res://.godot/imported/reinforced_rod.png-cadb32913ce3068e6f8bdf9253bb2832.ctex"]
 
 [params]
 
@@ -37,4 +37,4 @@ process/normal_map_invert_y=false
 process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
-detect_3d/compress_to=1
+detect_3d/compress_to=0

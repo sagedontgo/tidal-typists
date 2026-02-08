@@ -61,8 +61,8 @@ func _setup_tooltip() -> void:
 
 func add_fishing_items():
 	"""Add starting fishing items to inventory"""
-	var basic_rod_icon = load("res://assets/items/basic_rod.png")
-	var basic_bait_icon = load("res://assets/items/basic_bait.png")
+	var basic_rod_icon = load("res://assets/items/rods/basic_rod.png")
+	var basic_bait_icon = load("res://assets/items/baits/basic_bait.png")
 	
 	add_item({
 		"name": "Basic Rod",
@@ -249,14 +249,29 @@ func _on_slot_pressed(slot_index: int) -> void:
 	slot_pressed.emit(slot_index, get_item(slot_index))
 	
 func _on_slot_clicked(slot_index: int, item) -> void:
+	# Check if slot is locked - prevent moving locked items
+	if _slots[slot_index].get_meta("locked", false):
+		print("🔒 Slot ", slot_index, " is locked!")
+		return
+	
 	if _held_item == null:
 		if item == null:
+			return
+		
+		# Check if item being picked up is locked
+		if item is Dictionary and item.get("locked", false):
+			print("🔒 Item '", item.get("name", "Unknown"), "' is locked!")
 			return
 		
 		_held_item = item
 		_held_from_slot_index = slot_index
 		clear_slot(slot_index)
 		_update_held_visual()
+		return
+	
+	# Check if target slot is locked - prevent placing in locked slots
+	if _slots[slot_index].get_meta("locked", false):
+		print("🔒 Cannot place item in locked slot ", slot_index)
 		return
 	
 	var target_item = get_item(slot_index)
@@ -266,6 +281,16 @@ func _on_slot_clicked(slot_index: int, item) -> void:
 		_clear_held()
 	else:
 		_update_held_visual()
+
+func _reapply_locked_slots() -> void:
+	"""Re-apply locked metadata to slots after loading from GlobalData"""
+	for i in range(_items.size()):
+		if _items[i] != null and _items[i] is Dictionary:
+			if _items[i].get("locked", false):
+				_slots[i].set_meta("locked", true)
+				print("🔒 Re-locked slot ", i, ": ", _items[i].get("name", "Unknown"))
+			else:
+				_slots[i].set_meta("locked", false)
 
 func save_to_global() -> void:
 	var gd = get_node_or_null("/root/GlobalData")
@@ -297,6 +322,7 @@ func load_from_global() -> bool:
 					else:
 						_items.append(item)
 				refresh()
+				_reapply_locked_slots()
 				print("✅ Inventory loaded successfully")
 				print("=== INVENTORY LOAD COMPLETE ===\n")
 				return true

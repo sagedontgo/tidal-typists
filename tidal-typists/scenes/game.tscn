@@ -1,6 +1,6 @@
 [gd_scene format=4 uid="uid://c1e7sx3yc3jse"]
 
-[ext_resource type="Script" uid="uid://vl3sxoylpicp" path="res://scripts/game.gd" id="1_p57ef"]
+[ext_resource type="Script" uid="uid://cakq2fy68s11p" path="res://scripts/game.gd" id="1_p57ef"]
 [ext_resource type="PackedScene" uid="uid://bscfmqhblkamj" path="res://scenes/player.tscn" id="1_uwrxv"]
 [ext_resource type="PackedScene" uid="uid://n8r3fs1np7yu" path="res://scenes/cursor.tscn" id="2_lnu2h"]
 [ext_resource type="Texture2D" uid="uid://cod6ppkby6116" path="res://assets/map/tiles.png" id="2_yqjtg"]
@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" uid="uid://c40cjxyw2c7v4" path="res://scenes/inventory.tscn" id="7_u5sy4"]
 [ext_resource type="PackedScene" uid="uid://sjan3eivecdw" path="res://scenes/startscreen.tscn" id="8_gee14"]
 [ext_resource type="AudioStream" uid="uid://chl83s8f762db" path="res://Audio/Background Music/BGM1 (Minuet Slow).mp3" id="10_vtaks"]
+[ext_resource type="Script" uid="uid://1bp8vu7kmkax" path="res://scripts/shop_trigger.gd" id="13_kvuet"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vtaks"]
 resource_name = "tiles"
@@ -581,9 +582,6 @@ texture = ExtResource("4_dinhu")
 0:0/size_in_atlas = Vector2i(5, 4)
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-40.559143, -33.156715, 40.25071, -32.231407, 41.48445, 32.23141, -39.942272, 32.848278)
-5:0/size_in_atlas = Vector2i(5, 4)
-5:0/0 = 0
-5:0/0/y_sort_origin = 1
 10:0/size_in_atlas = Vector2i(5, 4)
 10:0/0 = 0
 10:0/0/y_sort_origin = 1
@@ -682,6 +680,14 @@ texture = ExtResource("4_dinhu")
 1:14/0 = 0
 2:14/0 = 0
 3:13/0 = 0
+5:0/size_in_atlas = Vector2i(5, 3)
+5:0/0 = 0
+5:0/0/z_index = 1
+5:0/0/y_sort_origin = 1
+5:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-38.30272, -12.013124, 37.780396, -11.490814, 39.000008, -8.023926, 37.13398, 21.45934, -36.014366, 20.339718, -38.62681, -10.263161)
+5:3/size_in_atlas = Vector2i(5, 1)
+5:3/0 = 0
+5:3/0/physics_layer_0/polygon_0/points = PackedVector2Array(-34.99475, -8.531059, 35.691162, -8.182854, 35.342957, 8.182852, -34.472443, 7.6605434)
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ir15t"]
 texture = ExtResource("5_kvuet")
@@ -1022,6 +1028,9 @@ sources/1 = SubResource("TileSetAtlasSource_gee14")
 [sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_uwrxv"]
 distance = -79.0
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dinhu"]
+size = Vector2(58, 35)
+
 [node name="Game" type="Node2D" unique_id=1101210002]
 script = ExtResource("1_p57ef")
 
@@ -1035,7 +1044,7 @@ z_index = 1
 z_as_relative = false
 y_sort_enabled = true
 position = Vector2(-5, 0)
-tile_map_data = PackedByteArray("AAATAPj/AAAJAAQAAAAQAPD/AAAJAAQAAAAAAO3/AAAJAAQAAADz/+3/AAAJAAQAAAD3/+z/AAAJAAQAAADs/+7/AAAJAAQAAADj//D/AAAJAAQAAADa//X/AAAJAAQAAADS////AAAJAAQAAADQ//X/AAAJAAQAAADz/wYAAAAJAAQAAAD2/wYAAAAJAAQAAADz/wgAAAAJAAQAAADv/wYAAAAJAAQAAAD5/wAAAAAJAAQAAADo/wAAAAAJAAQAAADe//v/AAAJAAQAAAD+//r/AAAJAAQAAAATAPn/AAAJAAUAAAD+//v/AAAJAAUAAAD5/wEAAAAJAAUAAAD2/wcAAAAJAAUAAADz/wkAAAAJAAUAAADz/wcAAAAJAAUAAADv/wcAAAAJAAUAAADo/wEAAAAJAAUAAADe//z/AAAJAAUAAADa//b/AAAJAAUAAADQ//b/AAAJAAUAAADS/wAAAAAJAAUAAADj//H/AAAJAAUAAADs/+//AAAJAAUAAADz/+7/AAAJAAUAAAAAAO7/AAAJAAUAAAD3/+3/AAAJAAUAAAAQAPH/AAAJAAUAAAD+//b/AAAGAAEAAAD///b/AAAFAAEAAAABAPb/AAAFAAEAAAACAPX/AAAGAAMAAAAGAPL/AAAGAAMAAAAGAPT/AAAFAAEAAAAHAPP/AAAGAAEAAAAIAPL/AAAFAAIAAAAIAPX/AAAGAAMAAAAJAPP/AAAFAAIAAAAKAPP/AAAGAAIAAAAKAPX/AAAGAAMAAADw//b/AAAFAAIAAADz//D/AAAFAAIAAADz//b/AAAFAAMAAAD1//D/AAAGAAAAAAD1//b/AAAFAAEAAAD2//P/AAAGAAMAAAD2//b/AAAFAAIAAAD3//D/AAAFAAIAAAD7//H/AAAFAAAAAAD9//L/AAAGAAIAAAD9//T/AAAGAAMAAAD+//P/AAAFAAIAAAAAAPL/AAAFAAMAAAACAPT/AAAGAAAAAAADAPD/AAAFAAAAAAAEAPf/AAAFAAAAAADt//L/AAAFAAMAAADv//P/AAAGAAEAAADv//b/AAAGAAIAAADx//H/AAAGAAAAAADx//b/AAAGAAMAAADz//L/AAAFAAEAAADz//X/AAAGAAIAAAD3//H/AAAFAAMAAAD3//L/AAAGAAMAAAD3//P/AAAFAAAAAAD5//X/AAAGAAAAAADn//P/AAAFAAEAAADo//P/AAAFAAIAAADp//f/AAAFAAAAAADq//P/AAAFAAMAAADs//b/AAAGAAIAAADt//f/AAAGAAMAAADw//P/AAAFAAMAAADy//b/AAAGAAEAAAD6//T/AAAGAAIAAAD6//f/AAAFAAAAAAD7//b/AAAFAAMAAADr//v/AAAGAAAAAADv//r/AAAGAAEAAADw//z/AAAGAAMAAADz//n/AAAGAAEAAADz//z/AAAFAAEAAAD1//v/AAAFAAAAAAD3//n/AAAGAAEAAAD4//n/AAAFAAEAAAD1//3/AAAFAAIAAADs/wAAAAAFAAMAAADt////AAAGAAMAAADt/wIAAAAGAAEAAADu////AAAGAAIAAADx////AAAFAAAAAADz/wIAAAAGAAAAAAD0//3/AAAGAAAAAAD0/wAAAAAGAAIAAADm//X/AAAFAAMAAADo//f/AAAFAAEAAADU//j/AAAGAAIAAADX//3/AAAGAAIAAADW//n/AAAFAAMAAADZ//r/AAAGAAIAAADe//j/AAAGAAMAAADk//f/AAAGAAMAAADh//b/AAAGAAMAAADm//b/AAAGAAAAAAA=")
+tile_map_data = PackedByteArray("AAATAPj/AAAJAAQAAAAQAPD/AAAJAAQAAAAAAO3/AAAJAAQAAADz/+3/AAAJAAQAAAD3/+z/AAAJAAQAAADs/+7/AAAJAAQAAADj//D/AAAJAAQAAADa//X/AAAJAAQAAADS////AAAJAAQAAADQ//X/AAAJAAQAAADz/wYAAAAJAAQAAAD2/wYAAAAJAAQAAADz/wgAAAAJAAQAAADv/wYAAAAJAAQAAAD5/wAAAAAJAAQAAADo/wAAAAAJAAQAAADe//v/AAAJAAQAAAD+//r/AAAJAAQAAAATAPn/AAAJAAUAAAD+//v/AAAJAAUAAAD5/wEAAAAJAAUAAAD2/wcAAAAJAAUAAADz/wkAAAAJAAUAAADz/wcAAAAJAAUAAADv/wcAAAAJAAUAAADo/wEAAAAJAAUAAADe//z/AAAJAAUAAADa//b/AAAJAAUAAADQ//b/AAAJAAUAAADS/wAAAAAJAAUAAADj//H/AAAJAAUAAADs/+//AAAJAAUAAADz/+7/AAAJAAUAAAAAAO7/AAAJAAUAAAD3/+3/AAAJAAUAAAAQAPH/AAAJAAUAAAD+//b/AAAGAAEAAAD///b/AAAFAAEAAAABAPb/AAAFAAEAAAACAPX/AAAGAAMAAAAGAPL/AAAGAAMAAAAGAPT/AAAFAAEAAAAHAPP/AAAGAAEAAAAIAPL/AAAFAAIAAAAIAPX/AAAGAAMAAAAJAPP/AAAFAAIAAAAKAPP/AAAGAAIAAAAKAPX/AAAGAAMAAADw//b/AAAFAAIAAADz//D/AAAFAAIAAADz//b/AAAFAAMAAAD1//D/AAAGAAAAAAD1//b/AAAFAAEAAAD2//P/AAAGAAMAAAD2//b/AAAFAAIAAAD3//D/AAAFAAIAAAD7//H/AAAFAAAAAAD9//L/AAAGAAIAAAD9//T/AAAGAAMAAAD+//P/AAAFAAIAAAACAPT/AAAGAAAAAAADAPD/AAAFAAAAAAAEAPf/AAAFAAAAAADt//L/AAAFAAMAAADv//P/AAAGAAEAAADv//b/AAAGAAIAAADx//H/AAAGAAAAAADx//b/AAAGAAMAAADz//L/AAAFAAEAAADz//X/AAAGAAIAAAD3//H/AAAFAAMAAAD3//L/AAAGAAMAAAD5//X/AAAGAAAAAADn//P/AAAFAAEAAADo//P/AAAFAAIAAADp//f/AAAFAAAAAADq//P/AAAFAAMAAADs//b/AAAGAAIAAADt//f/AAAGAAMAAADw//P/AAAFAAMAAADy//b/AAAGAAEAAAD6//f/AAAFAAAAAAD7//b/AAAFAAMAAADr//v/AAAGAAAAAADv//r/AAAGAAEAAADw//z/AAAGAAMAAADz//n/AAAGAAEAAADz//z/AAAFAAEAAAD1//v/AAAFAAAAAAD3//n/AAAGAAEAAAD4//n/AAAFAAEAAAD1//3/AAAFAAIAAADs/wAAAAAFAAMAAADt////AAAGAAMAAADt/wIAAAAGAAEAAADu////AAAGAAIAAADx////AAAFAAAAAADz/wIAAAAGAAAAAAD0//3/AAAGAAAAAAD0/wAAAAAGAAIAAADm//X/AAAFAAMAAADo//f/AAAFAAEAAADU//j/AAAGAAIAAADX//3/AAAGAAIAAADW//n/AAAFAAMAAADZ//r/AAAGAAIAAADe//j/AAAGAAMAAADk//f/AAAGAAMAAADh//b/AAAGAAMAAADm//b/AAAGAAAAAAADAPH/AQAFAAAAAAADAPP/AQAFAAMAAAA=")
 tile_set = SubResource("TileSet_lnu2h")
 y_sort_origin = 2
 
@@ -1087,14 +1096,12 @@ grow_vertical = 0
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=731352674]
 
 [node name="FishingUI" type="Control" parent="CanvasLayer" unique_id=520759327]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="WaitingLabel" type="Label" parent="CanvasLayer/FishingUI" unique_id=1950125123]
-visible = false
 layout_mode = 0
 offset_left = 125.0
 offset_top = -55.0
@@ -1104,7 +1111,6 @@ theme_override_font_sizes/font_size = 5
 text = "Waiting for fish..."
 
 [node name="CastingLabel" type="Label" parent="CanvasLayer/FishingUI" unique_id=1576788183]
-visible = false
 layout_mode = 0
 offset_left = 134.0
 offset_top = -55.0
@@ -1116,3 +1122,10 @@ text = "Casting..."
 [node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="." unique_id=1537771883]
 stream = ExtResource("10_vtaks")
 autoplay = true
+
+[node name="ShopTrigger" type="Area2D" parent="." unique_id=1425246454]
+script = ExtResource("13_kvuet")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ShopTrigger" unique_id=1573172892]
+position = Vector2(52, -181.5)
+shape = SubResource("RectangleShape2D_dinhu")

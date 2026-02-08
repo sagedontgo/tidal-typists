@@ -112,6 +112,8 @@ func _ready() -> void:
 			hotbar.lock_special_items()
 	else:
 		print("♻️ Using saved hotbar items - NOT setting up new items")
+
+	
 	print("=== INITIALIZATION COMPLETE ===\n")
 	
 	print("\n=== Tidal Typist Ready! ===")
@@ -134,7 +136,8 @@ func _input(event: InputEvent) -> void:
 					print("⚠️ Can't cast there - click on water within range!")
 			else:
 				print("⚠️ You need to equip a fishing rod to fish!")
-
+	if event.is_action_pressed("ui_text_backspace"):
+		SceneTransition.fade_to_scene("res://scenes/shop.tscn")
 func has_fishing_rod_equipped() -> bool:
 	"""Check if player currently has a fishing rod selected in hotbar"""
 	if hotbar == null:
@@ -245,14 +248,15 @@ func catch_fish() -> void:
 	waiting_label.visible = false
 	player.can_move = true
 	
-	# Save player position before combat
-	GlobalData.has_saved_player_position = true
-	GlobalData.saved_player_position = player.global_position
-	print("💾 Saved player position: ", player.global_position)
+	if GlobalData.current_bait.get("uses_remaining", 0) <= 0:
+		print("⚠️ Out of bait!")
+		return
 	
-	# Generate random fish for combat
+	GlobalData.current_bait["uses_remaining"] -= 1
+	print("Bait remaining: ", GlobalData.current_bait["uses_remaining"])
+	
 	GlobalData.current_fish = GlobalData.roll_random_fish()
-	GlobalData.rod_durability = 100
+	GlobalData.rod_durability = GlobalData.current_rod.get("current_durability", 100)
 	
 	# *** CRITICAL FIX: Save inventory/hotbar BEFORE any scene transition ***
 	print("\n💾 === SAVING INVENTORY BEFORE COMBAT ===")
@@ -278,6 +282,13 @@ func catch_fish() -> void:
 	else:
 		print("❌ ERROR: Could not save hotbar!")
 	print("=== SAVE COMPLETE ===\n")
+	
+	# Save player position before combat
+	var player = get_tree().current_scene.find_child("Player", true, false)
+	if player != null:
+		GlobalData.has_saved_player_position = true
+		GlobalData.saved_player_position = player.global_position
+		print("💾 Saved player position: ", GlobalData.saved_player_position)
 	
 	# Switch to normal cursor for combat UI
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)

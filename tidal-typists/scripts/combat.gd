@@ -304,17 +304,16 @@ func show_player_result() -> void:
 		var hit_messages = [
 			"You hit %s for %d damage! (%d WPM, %d%% Acc)",
 			"Fish takes %d damage! (%d WPM, %d%%)",
-			"%d damage to %s! (%d WPM, %d%%)",
-			"%s takes %d damage! (%d WPM, %d%%)"
+			"%s takes %d damage! (%d WPM, %d%%)"  # FIXED: Consistent format
 		]
 		var selected = hit_messages[randi() % hit_messages.size()]
 		
-		# Simplified formatting - less text means less overflow
-		if selected.begins_with("You") or selected.begins_with("%d damage to"):
-			message = selected % [fish_name, player_damage, last_wpm, int(last_accuracy)]
-		elif selected.begins_with("Fish"):
+		# FIXED: Simpler, consistent formatting
+		if selected.begins_with("Fish"):
+			# "Fish takes %d damage! (%d WPM, %d%%)"
 			message = selected % [player_damage, last_wpm, int(last_accuracy)]
 		else:
+			# Both other messages expect: name, damage, wpm, accuracy
 			message = selected % [fish_name, player_damage, last_wpm, int(last_accuracy)]
 	else:
 		var miss_messages = [
@@ -329,7 +328,6 @@ func show_player_result() -> void:
 	result_textbox_sprite.visible = true
 	result_ui.visible = true
 	continue_button.visible = true
-	is_showing_player_result = true
 
 func on_continue_pressed() -> void:
 	if is_showing_player_result:
@@ -350,14 +348,15 @@ func on_continue_pressed() -> void:
 	var fish := _gd.get("current_fish") as Dictionary
 	if int(fish.get("health", 0)) <= 0:
 		add_fish_to_inventory(fish)
+		GlobalData.current_rod["current_durability"] = GlobalData.rod_durability
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		SceneTransition.fade_to_scene("res://scenes/game.tscn")
 		return
-	
+
 	if int(_gd.get("rod_durability")) <= 0:
+		GlobalData.current_rod["current_durability"] = 0
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		SceneTransition.fade_to_scene("res://scenes/game.tscn")
-		return
 	
 	start_combat()
 

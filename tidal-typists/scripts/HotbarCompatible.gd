@@ -358,6 +358,16 @@ func _handle_inventory_swap(slot_index: int) -> void:
 func get_current_item():
 	return get_item(_current_slot)
 
+func _reapply_locked_slots() -> void:
+	"""Re-apply locked metadata to slots after loading from GlobalData"""
+	for i in range(_items.size()):
+		if _items[i] != null and _items[i] is Dictionary:
+			if _items[i].get("locked", false):
+				_slots[i].set_meta("locked", true)
+				print("🔒 Hotbar: Re-locked slot ", i, ": ", _items[i].get("name", "Unknown"))
+			else:
+				_slots[i].set_meta("locked", false)
+
 # Save/Load hotbar state to GlobalData
 func save_to_global() -> void:
 	var gd = get_node_or_null("/root/GlobalData")
@@ -385,6 +395,7 @@ func load_from_global() -> bool:
 						_items.append(item)
 				
 				refresh()
+				_reapply_locked_slots()
 				print("✅ Loaded hotbar items from GlobalData")
 				# Debug: print items
 				for i in range(min(5, _items.size())):
