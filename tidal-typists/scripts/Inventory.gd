@@ -26,7 +26,7 @@ func _ready() -> void:
 	
 	slot_pressed.connect(Callable(self, "_on_slot_clicked"))
 	
-	# Start hidden (will be opened by backpack)
+	# Start hidden (will be 1ed by backpack)
 	visible = false
 	print("  - Inventory ready, waiting for game.gd to load saved data")
 
