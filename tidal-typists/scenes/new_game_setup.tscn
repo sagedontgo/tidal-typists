@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bdlsmt8xn28cm"]
 
-[ext_resource type="Texture2D" uid="uid://birylhn30nsck" path="res://Images/2d pixel background.png" id="1_bg"]
+[ext_resource type="Texture2D" uid="uid://bhh1fbm1iei4" path="res://assets/images/background1.png" id="2_o4lne"]
 [ext_resource type="Script" uid="uid://byi6llyttru2n" path="res://scripts/new_game_setup.gd" id="2_script"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o4lne"]
@@ -33,7 +33,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("1_bg")
+texture = ExtResource("2_o4lne")
 expand_mode = 1
 stretch_mode = 6
 
