@@ -127,12 +127,13 @@ func fish_bites():
 		
 		fish_hooked.emit(fish)
 	
-	# Wait a moment to show "Fish hooked!" message
-	await get_tree().create_timer(1.0).timeout
+	# Play the hook animation immediately
+	if player.has_method("play_hook_animation"):
+		await player.play_hook_animation()
 	
 	fishing_ui.visible = false
 	
-	# Stop fishing animation
+	# Stop fishing animation and return to idle
 	if player.has_method("stop_fishing"):
 		player.stop_fishing()
 	

@@ -162,6 +162,25 @@ func start_fishing():
 	
 	print("🎣 Started fishing animation (direction: ", get_fishing_direction_name(), ")")
 
+func play_hook_animation():
+	"""Play the hook animation based on current fishing direction"""
+	# Choose hook animation based on last direction
+	if abs(last_direction.x) > abs(last_direction.y):
+		if last_direction.x < 0:
+			animated_sprite.play("hook_left")
+		else:
+			animated_sprite.play("hook_right")
+	else:
+		if last_direction.y > 0:
+			animated_sprite.play("hook_down")
+		else:
+			animated_sprite.play("hook_up")
+	
+	print("🎣 Playing hook animation (direction: ", get_fishing_direction_name(), ")")
+	
+	# Wait for the animation to finish
+	await animated_sprite.animation_finished
+
 func stop_fishing():
 	"""Stop fishing and return to idle"""
 	is_fishing = false
@@ -177,15 +196,6 @@ func get_fishing_direction_name() -> String:
 		return "down" if last_direction.y > 0 else "up"
 
 func _input(event: InputEvent) -> void:
-	# F key for testing fishing animation only
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F:
-		if is_fishing:
-			stop_fishing()
-		else:
-			start_fishing()
-		get_viewport().set_input_as_handled()
-		return
-	
 	# Backslash for instant combat test
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_BACKSLASH:
 		var gd := get_node_or_null("/root/GlobalData")

@@ -30,11 +30,10 @@ func _ready() -> void:
 	
 	slot_pressed.connect(Callable(self, "_on_slot_clicked"))
 	
-<<<<<<< HEAD
 	# Start hidden (will be 1ed by backpack)
-=======
 	# Start hidden
->>>>>>> 29eab4709ba7a8ad5aa47db8423cca844b327f5e
+
+	# Start hidden (will be opened by backpack)
 	visible = false
 	print("  - Inventory ready")
 

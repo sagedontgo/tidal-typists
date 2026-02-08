@@ -15,7 +15,7 @@ script = ExtResource("1_g2els")
 position = Vector2(0, -9)
 scale = Vector2(0.50390625, 0.43097016)
 sprite_frames = ExtResource("2_g2els")
-animation = &"idle"
+animation = &"fishing_up"
 
 [node name="NicknameLabel" type="Label" parent="." unique_id=-1189472823]
 offset_left = -20.0
