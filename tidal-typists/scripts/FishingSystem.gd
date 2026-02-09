@@ -115,9 +115,19 @@ func fish_bites():
 	# Generate random fish
 	var gd = get_node_or_null("/root/GlobalData")
 	if gd != null:
+		# *** CONSUME 1 BAIT ***
+		gd.current_bait["uses_remaining"] = max(0, gd.current_bait.get("uses_remaining", 10) - 1)
+		print("🪱 Bait consumed. Remaining: ", gd.current_bait["uses_remaining"])
+		
+		# Update bait in saved arrays
+		update_bait_in_saved_items(gd)
+		
 		var fish = gd.roll_random_fish()
 		gd.current_fish = fish
-		gd.rod_durability = 100  # Reset rod durability
+		
+		# *** FIX: Use current rod durability instead of resetting to 100 ***
+		gd.rod_durability = gd.current_rod.get("current_durability", 100)
+		print("🎣 Starting combat with rod durability: ", gd.rod_durability)
 		
 		# Save player position
 		gd.has_saved_player_position = true
@@ -140,6 +150,31 @@ func fish_bites():
 	# Transition to combat
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	get_tree().change_scene_to_file("res://scenes/combat.tscn")
+
+func update_bait_in_saved_items(gd: Node) -> void:
+	"""Update bait count in both saved_inventory_items and saved_hotbar_items"""
+	var bait_name = gd.current_bait.get("name", "Basic Bait")
+	var uses_remaining = gd.current_bait.get("uses_remaining", 0)
+	
+	# Update in inventory
+	for i in range(gd.saved_inventory_items.size()):
+		var item = gd.saved_inventory_items[i]
+		if item != null and item is Dictionary:
+			if item.get("type") == "bait" and item.get("name") == bait_name:
+				if uses_remaining <= 0:
+					gd.saved_inventory_items[i] = null
+				else:
+					item["count"] = uses_remaining
+	
+	# Update in hotbar
+	for i in range(gd.saved_hotbar_items.size()):
+		var item = gd.saved_hotbar_items[i]
+		if item != null and item is Dictionary:
+			if item.get("type") == "bait" and item.get("name") == bait_name:
+				if uses_remaining <= 0:
+					gd.saved_hotbar_items[i] = null
+				else:
+					item["count"] = uses_remaining
 
 func update_fishing_label(new_text: String):
 	"""Update the fishing status label"""

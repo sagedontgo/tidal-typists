@@ -36,6 +36,15 @@ func has_fishing_rod_equipped() -> bool:
 					return current_item.get("type", "") == "fishing_rod"
 	return false
 
+func is_rod_broken() -> bool:
+	"""Check if the fishing rod is broken (0 durability)"""
+	var gd := get_node_or_null("/root/GlobalData")
+	if gd == null:
+		return false
+	
+	var current_durability = gd.current_rod.get("current_durability", 100)
+	return current_durability <= 0
+
 func is_inventory_open() -> bool:
 	"""Check if inventory UI is currently open"""
 	var scene = get_tree().current_scene
@@ -72,6 +81,12 @@ func use_fishing_rod():
 		print("⚠️ Already fishing!")
 		return
 	
+	# *** NEW: Check if rod is broken ***
+	if is_rod_broken():
+		print("⚠️ Your fishing rod is broken! Repair it at the shop.")
+		show_broken_rod_message()
+		return
+	
 	# Check if we're on water
 	if not is_on_water():
 		print("⚠️ You need to be on water to fish!")
@@ -84,6 +99,12 @@ func use_fishing_rod():
 	
 	# Start fishing through the system (this calls start_fishing() below which plays animation)
 	fishing_system.start_fishing()
+
+func show_broken_rod_message():
+	"""Show a temporary message when trying to use broken rod"""
+	# This could be enhanced with a UI label, but for now just print
+	# You can add a CanvasLayer with a Label here if desired
+	pass
 
 func load_character_sprite():
 	"""Load the correct sprite sheet based on player's gender"""
@@ -271,8 +292,11 @@ func _input(event: InputEvent) -> void:
 			gd.set("has_saved_player_position", true)
 			gd.set("saved_player_position", global_position)
 			gd.current_fish = gd.roll_random_fish()
-			gd.rod_durability = 100
+			
+			# *** FIX: Use current rod durability instead of resetting ***
+			gd.rod_durability = gd.current_rod.get("current_durability", 100)
 			print("🎣 TEST FIGHT! Fish: ", gd.current_fish.get("name"), " Lv.", gd.current_fish.get("level"), " HP: ", gd.current_fish.get("health"))
+			print("🎣 Rod durability: ", gd.rod_durability)
 
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		get_tree().change_scene_to_file("res://scenes/combat.tscn")

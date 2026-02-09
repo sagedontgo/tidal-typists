@@ -83,6 +83,8 @@ func _ready() -> void:
 		print("  - has_initialized_hotbar: ", gd.has_initialized_hotbar)
 		print("  - saved_inventory_items size: ", gd.saved_inventory_items.size())
 		print("  - saved_hotbar_items size: ", gd.saved_hotbar_items.size())
+		print("  - current_rod durability: ", gd.current_rod.get("current_durability", 100))
+		print("  - current_bait remaining: ", gd.current_bait.get("uses_remaining", 0))
 	else:
 		print("❌ ERROR: GlobalData not found!")
 	
@@ -93,6 +95,10 @@ func _ready() -> void:
 	if hotbar.has_method("load_from_global"):
 		loaded_hotbar = hotbar.load_from_global()
 		print("📊 Hotbar load_from_global returned: ", loaded_hotbar)
+	
+	# CRITICAL: Refresh equipment from GlobalData after loading
+	# This ensures rod durability and bait count are up-to-date
+	refresh_equipment_displays()
 	
 	print("\n🎯 === DECISION TIME ===")
 	# Only add starting items if we didn't load saved items
@@ -112,8 +118,6 @@ func _ready() -> void:
 			hotbar.lock_special_items()
 	else:
 		print("♻️ Using saved hotbar items - NOT setting up new items")
-
-	
 	print("=== INITIALIZATION COMPLETE ===\n")
 	
 	print("\n=== Tidal Typist Ready! ===")
@@ -136,8 +140,10 @@ func _input(event: InputEvent) -> void:
 					print("⚠️ Can't cast there - click on water within range!")
 			else:
 				print("⚠️ You need to equip a fishing rod to fish!")
-	if event.is_action_pressed("ui_text_backspace"):
-		SceneTransition.fade_to_scene("res://scenes/shop.tscn")
+	
+	# *** REMOVED: Backspace shortcut for shop - use proper shop trigger instead ***
+	# The shop should only be accessible via the shop_trigger Area2D with E key
+
 func has_fishing_rod_equipped() -> bool:
 	"""Check if player currently has a fishing rod selected in hotbar"""
 	if hotbar == null:
@@ -248,31 +254,30 @@ func catch_fish() -> void:
 	waiting_label.visible = false
 	player.can_move = true
 	
-	if GlobalData.current_bait.get("uses_remaining", 0) <= 0:
-		print("⚠️ Out of bait!")
-		return
+	# Save player position before combat
+	GlobalData.has_saved_player_position = true
+	GlobalData.saved_player_position = player.global_position
+	print("💾 Saved player position: ", player.global_position)
 	
-	GlobalData.current_bait["uses_remaining"] -= 1
-	print("Bait remaining: ", GlobalData.current_bait["uses_remaining"])
-	
+	# Generate random fish for combat
 	GlobalData.current_fish = GlobalData.roll_random_fish()
 	GlobalData.rod_durability = GlobalData.current_rod.get("current_durability", 100)
 	
-	# *** CRITICAL FIX: Save inventory/hotbar BEFORE any scene transition ***
+	# *** CONSUME 1 BAIT ***
+	var gd = GlobalData
+	var old_bait_count = gd.current_bait.get("uses_remaining", 10)
+	gd.current_bait["uses_remaining"] = max(0, old_bait_count - 1)
+	var new_bait_count = gd.current_bait["uses_remaining"]
+	print("🪱 Bait consumed: ", old_bait_count, " -> ", new_bait_count)
+	
+	# Update bait count in saved inventory items
+	update_bait_in_saved_items(gd)
+	
+	# CRITICAL FIX: Save inventory/hotbar BEFORE any scene transition
 	print("\n💾 === SAVING INVENTORY BEFORE COMBAT ===")
 	if inventory != null and inventory.has_method("save_to_global"):
 		inventory.save_to_global()
 		print("✅ Saved inventory to GlobalData")
-		
-		# Debug: Show what was saved
-		var gd = get_node_or_null("/root/GlobalData")
-		if gd:
-			print("📦 Inventory saved with ", gd.saved_inventory_items.size(), " slots:")
-			for i in range(gd.saved_inventory_items.size()):
-				var item = gd.saved_inventory_items[i]
-				if item != null:
-					var item_name = item.get("name", "Unknown") if item is Dictionary else str(item)
-					print("  Slot %d: %s" % [i, item_name])
 	else:
 		print("❌ ERROR: Could not save inventory!")
 	
@@ -283,17 +288,10 @@ func catch_fish() -> void:
 		print("❌ ERROR: Could not save hotbar!")
 	print("=== SAVE COMPLETE ===\n")
 	
-	# Save player position before combat
-	var player = get_tree().current_scene.find_child("Player", true, false)
-	if player != null:
-		GlobalData.has_saved_player_position = true
-		GlobalData.saved_player_position = player.global_position
-		print("💾 Saved player position: ", GlobalData.saved_player_position)
-	
 	# Switch to normal cursor for combat UI
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	
-	# *** FIX: Use only ONE scene transition method ***
+	# Use only ONE scene transition method
 	await SceneTransition.fade_to_scene("res://scenes/combat.tscn")
 
 func _on_hotbar_slot_changed(slot_index: int):
@@ -310,4 +308,46 @@ func _on_hotbar_item_used(slot_index: int, item):
 		return
 	
 	var itemName = item if item is String else (item.get("itemName", "Unknown") if item is Dictionary else "Unknown")
-	print("⚡ Used ", itemName, " from slot ", slot_index + 1)	
+	print("⚡ Used ", itemName, " from slot ", slot_index + 1)
+
+func refresh_equipment_displays() -> void:
+	"""Refresh both inventory and hotbar equipment displays from GlobalData"""
+	if inventory != null and inventory.has_method("refresh_equipment_from_global"):
+		inventory.refresh_equipment_from_global()
+		print("🔄 Refreshed inventory from GlobalData")
+	
+	if hotbar != null and hotbar.has_method("refresh_equipment_from_global"):
+		hotbar.refresh_equipment_from_global()
+		print("🔄 Refreshed hotbar from GlobalData")
+
+func update_bait_in_saved_items(gd: Node) -> void:
+	"""Update bait count in both saved_inventory_items and saved_hotbar_items"""
+	var bait_name = gd.current_bait.get("name", "Basic Bait")
+	var uses_remaining = gd.current_bait.get("uses_remaining", 0)
+	
+	print("📦 Updating bait in saved items: ", uses_remaining, " remaining")
+	
+	# Update in inventory
+	for i in range(gd.saved_inventory_items.size()):
+		var item = gd.saved_inventory_items[i]
+		if item != null and item is Dictionary:
+			if item.get("type") == "bait" and item.get("name") == bait_name:
+				if uses_remaining <= 0:
+					gd.saved_inventory_items[i] = null
+					print("  🗑️ Removed depleted bait from inventory slot ", i)
+				else:
+					item["count"] = uses_remaining
+					print("  ✅ Updated bait in inventory slot ", i, ": ", uses_remaining)
+	
+	# Update in hotbar
+	for i in range(gd.saved_hotbar_items.size()):
+		var item = gd.saved_hotbar_items[i]
+		if item != null and item is Dictionary:
+			if item.get("type") == "bait" and item.get("name") == bait_name:
+				if uses_remaining <= 0:
+					gd.saved_hotbar_items[i] = null
+					print("  🗑️ Removed depleted bait from hotbar slot ", i)
+				else:
+					item["count"] = uses_remaining
+					print("  ✅ Updated bait in hotbar slot ", i, ": ", uses_remaining)
+

@@ -7,14 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://c8vmcyemx03js" path="res://assets/ui/button.png" id="3_g1ylw"]
 [ext_resource type="AudioStream" uid="uid://t20ap0e2eewt" path="res://Audio/Background Music/BGM2 (Minuet).mp3" id="3_o6o42"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m1yxm"]
-bg_color = Color(1, 1, 1, 0.8901961)
-border_width_left = 6
-border_width_top = 6
-border_width_right = 6
-border_width_bottom = 6
-border_color = Color(0.54509807, 0.43529412, 0.2784314, 1)
-
 [node name="CanvasLayer" type="CanvasLayer" unique_id=48326938]
 
 [node name="StartScreen" type="Control" parent="." unique_id=708417317]
@@ -39,25 +31,6 @@ position = Vector2(572.25006, 321.25003)
 scale = Vector2(0.7353516, 0.63037103)
 texture = ExtResource("1_o6o42")
 
-[node name="Button2" type="Button" parent="StartScreen/HBoxContainer/Background" unique_id=140113426]
-z_index = 1
-offset_left = -122.7305
-offset_top = 347.0178
-offset_right = 157.23706
-offset_bottom = 432.64847
-theme_override_colors/font_color = Color(1, 1, 1, 1)
-theme_override_fonts/font = ExtResource("2_4ge0g")
-theme_override_font_sizes/font_size = 50
-theme_override_styles/normal = SubResource("StyleBoxFlat_m1yxm")
-text = "Settings"
-flat = true
-
-[node name="Sprite2D" type="Sprite2D" parent="StartScreen/HBoxContainer/Background/Button2" unique_id=301891663]
-z_index = -1
-position = Vector2(140.06903, -168.15494)
-scale = Vector2(5.7573113, 7.045673)
-texture = ExtResource("3_g1ylw")
-
 [node name="Logo" type="Sprite2D" parent="StartScreen/HBoxContainer/Background" unique_id=916293687]
 position = Vector2(18.698452, -257.38812)
 scale = Vector2(0.9363233, 0.99999994)
@@ -76,10 +49,10 @@ text = "New Game"
 flat = true
 metadata/_edit_use_anchors_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="StartScreen/HBoxContainer/Background/Button4" unique_id=449303322]
+[node name="Sprite2D2" type="Sprite2D" parent="StartScreen/HBoxContainer/Background/Button4" unique_id=301891663]
 z_index = -1
-position = Vector2(148.2284, 263.33694)
-scale = Vector2(5.806143, 6.423017)
+position = Vector2(146.86847, 49.17737)
+scale = Vector2(5.757311, 7.045673)
 texture = ExtResource("3_g1ylw")
 
 [node name="Button5" type="Button" parent="StartScreen/HBoxContainer/Background" unique_id=1941845876]

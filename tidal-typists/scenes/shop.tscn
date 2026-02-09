@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bcp07u0irwstv"]
 
-[ext_resource type="Script" uid="uid://c3s8ip0ur3ftu" path="res://scripts/shop.gd" id="1_lx5au"]
+[ext_resource type="Script" uid="uid://yor4tngwe72q" path="res://scripts/shop.gd" id="1_lx5au"]
 [ext_resource type="Texture2D" uid="uid://bsisggugekrbs" path="res://icon.svg" id="2_xfvoa"]
 
 [node name="Control" type="Control" unique_id=347016077]
@@ -46,7 +46,7 @@ text = "Buy Rod"
 
 [node name="RepairRodButton" type="Button" parent="VBoxContainer/HBoxContainer/RodShop" unique_id=1250537943]
 layout_mode = 2
-text = "Repair Rod (50 TypBit)"
+text = "Repair Rod"
 
 [node name="BaitShop" type="VBoxContainer" parent="VBoxContainer/HBoxContainer" unique_id=1826633082]
 layout_mode = 2

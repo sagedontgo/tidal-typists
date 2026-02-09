@@ -61,15 +61,25 @@ func _setup_tooltip() -> void:
 
 func add_fishing_items():
 	"""Add starting fishing items to inventory"""
+	var gd = get_node_or_null("/root/GlobalData")
+	
 	var basic_rod_icon = load("res://assets/items/rods/basic_rod.png")
 	var basic_bait_icon = load("res://assets/items/baits/basic_bait.png")
+	
+	# Get initial values from GlobalData
+	var rod_durability = 100
+	var bait_count = 10
+	
+	if gd != null:
+		rod_durability = gd.current_rod.get("current_durability", 100)
+		bait_count = gd.current_bait.get("uses_remaining", 10)
 	
 	add_item({
 		"name": "Basic Rod",
 		"type": "fishing_rod",
 		"icon": basic_rod_icon,
 		"power": 10,
-		"durability": 100,
+		"durability": rod_durability,
 		"description": "A simple fishing rod for beginners."
 	})
 	
@@ -77,13 +87,20 @@ func add_fishing_items():
 		"name": "Basic Bait",
 		"type": "bait",
 		"icon": basic_bait_icon,
-		"count": 20,
+		"count": bait_count,
 		"stackable": true,
 		"max_stack": 99,
 		"description": "Standard bait for catching fish."
 	})
 	
 	print("✅ Added fishing items to inventory")
+	
+	# Sync to GlobalData
+	if gd != null:
+		gd.current_rod["current_durability"] = rod_durability
+		gd.rod_durability = rod_durability
+		gd.current_bait["uses_remaining"] = bait_count
+		print("✅ Synced fishing items to GlobalData")
 
 func _input(event: InputEvent) -> void:
 	if visible and event is InputEventKey:
@@ -130,6 +147,10 @@ func toggle_inventory():
 	
 	visible = not visible
 	_update_held_visual()
+	
+	# Refresh equipment values from GlobalData when opening inventory
+	if visible:
+		refresh_equipment_from_global()
 	
 	if not visible and tooltip != null:
 		tooltip.visible = false
@@ -323,6 +344,7 @@ func load_from_global() -> bool:
 						_items.append(item)
 				refresh()
 				_reapply_locked_slots()
+				sync_equipment_to_global()  # Sync rod and bait to GlobalData
 				print("✅ Inventory loaded successfully")
 				print("=== INVENTORY LOAD COMPLETE ===\n")
 				return true
@@ -335,3 +357,98 @@ func load_from_global() -> bool:
 	
 	print("=== INVENTORY LOAD FAILED ===\n")
 	return false
+
+func sync_equipment_to_global() -> void:
+	"""Sync fishing rod and bait from inventory to GlobalData current_rod and current_bait"""
+	var gd = get_node_or_null("/root/GlobalData")
+	if gd == null:
+		return
+	
+	print("\n🔄 === SYNCING EQUIPMENT TO GLOBALDATA ===")
+	
+	# Find fishing rod in inventory
+	for item in _items:
+		if item != null and item is Dictionary:
+			if item.get("type") == "fishing_rod":
+				var rod_name = item.get("name", "Basic Rod")
+				var rod_durability = item.get("durability", 100)
+				
+				# Update current_rod in GlobalData
+				gd.current_rod["current_durability"] = rod_durability
+				gd.rod_durability = rod_durability
+				
+				print("✅ Synced rod: ", rod_name, " (Durability: ", rod_durability, "%)")
+			
+			elif item.get("type") == "bait":
+				var bait_name = item.get("name", "Basic Bait")
+				var bait_count = item.get("count", 0)
+				
+				# Update current_bait in GlobalData
+				gd.current_bait["uses_remaining"] = bait_count
+				
+				print("✅ Synced bait: ", bait_name, " (Count: ", bait_count, ")")
+	
+	print("=== SYNC COMPLETE ===\n")
+
+func refresh_equipment_from_global() -> void:
+	"""Refresh rod durability and bait count from GlobalData (called when opening inventory)"""
+	var gd = get_node_or_null("/root/GlobalData")
+	if gd == null:
+		return
+	
+	print("\n🔄 === REFRESHING EQUIPMENT FROM GLOBALDATA ===")
+	print("GlobalData rod durability: ", gd.current_rod.get("current_durability", 100))
+	print("GlobalData bait remaining: ", gd.current_bait.get("uses_remaining", 0))
+	
+	var updated_count = 0
+	var slots_to_update = []
+	
+	# Update all equipment items from GlobalData
+	for i in range(_items.size()):
+		var item = _items[i]
+		if item != null and item is Dictionary:
+			var needs_update = false
+			
+			if item.get("type") == "fishing_rod":
+				var current_durability = gd.current_rod.get("current_durability", 100)
+				var old_durability = item.get("durability", -1)
+				
+				print("  Slot ", i, " rod - Old: ", old_durability, " New: ", current_durability)
+				
+				if old_durability != current_durability:
+					item["durability"] = current_durability
+					print("  ✅ Updated rod durability: ", current_durability, "%")
+					needs_update = true
+					updated_count += 1
+			
+			elif item.get("type") == "bait":
+				var uses_remaining = gd.current_bait.get("uses_remaining", 0)
+				var old_count = item.get("count", -1)
+				
+				print("  Slot ", i, " bait - Old: ", old_count, " New: ", uses_remaining)
+				
+				if uses_remaining <= 0:
+					_items[i] = null
+					print("  🗑️ Removed depleted bait")
+					needs_update = true
+					updated_count += 1
+				elif old_count != uses_remaining:
+					item["count"] = uses_remaining
+					print("  ✅ Updated bait count: ", uses_remaining)
+					needs_update = true
+					updated_count += 1
+			
+			# Mark slot for update
+			if needs_update:
+				slots_to_update.append(i)
+	
+	# Explicitly update each changed slot
+	for slot_index in slots_to_update:
+		_update_slot(slot_index)
+	
+	if updated_count > 0:
+		print("🔄 Updated ", updated_count, " items")
+	else:
+		print("✓ No changes needed")
+	
+	print("=== REFRESH COMPLETE ===\n")

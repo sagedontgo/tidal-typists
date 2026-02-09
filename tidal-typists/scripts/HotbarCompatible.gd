@@ -410,3 +410,49 @@ func load_from_global() -> bool:
 		else:
 			print("  - No previous hotbar initialization found")
 	return false
+
+func refresh_equipment_from_global() -> void:
+	"""Refresh rod durability and bait count from GlobalData"""
+	var gd = get_node_or_null("/root/GlobalData")
+	if gd == null:
+		return
+	
+	print("\n🔄 === REFRESHING HOTBAR FROM GLOBALDATA ===")
+	print("GlobalData rod durability: ", gd.current_rod.get("current_durability", 100))
+	print("GlobalData bait remaining: ", gd.current_bait.get("uses_remaining", 0))
+	
+	var updated_count = 0
+	
+	# Update all equipment items from GlobalData
+	for i in range(_items.size()):
+		var item = _items[i]
+		if item != null and item is Dictionary:
+			if item.get("type") == "fishing_rod":
+				var current_durability = gd.current_rod.get("current_durability", 100)
+				var old_durability = item.get("durability", -1)
+				
+				if old_durability != current_durability:
+					item["durability"] = current_durability
+					print("  ✅ Updated rod in slot ", i, " durability: ", current_durability, "%")
+					updated_count += 1
+			
+			elif item.get("type") == "bait":
+				var uses_remaining = gd.current_bait.get("uses_remaining", 0)
+				var old_count = item.get("count", -1)
+				
+				if uses_remaining <= 0:
+					_items[i] = null
+					print("  🗑️ Removed depleted bait from slot ", i)
+					updated_count += 1
+				elif old_count != uses_remaining:
+					item["count"] = uses_remaining
+					print("  ✅ Updated bait in slot ", i, " count: ", uses_remaining)
+					updated_count += 1
+	
+	if updated_count > 0:
+		refresh()  # Refresh UI to show changes
+		print("🔄 Refreshed hotbar UI with ", updated_count, " changes")
+	else:
+		print("✓ No changes needed")
+	
+	print("=== HOTBAR REFRESH COMPLETE ===\n")

@@ -24,13 +24,37 @@ extends Control
 @onready var _gd: Node = get_node_or_null("/root/GlobalData")
 
 @export var easy_words: Array[String] = [
-	"the", "and", "cat", "dog", "sun", "boy", "run", "sit", "big", "hot"
+	# 3-letter words
+	"the", "and", "cat", "dog", "sun", "boy", "run", "sit", "big", "hot",
+	"fox", "red", "can", "get", "yes", "new", "old", "see", "top", "car",
+	"mom", "dad", "fly", "sky", "bat", "rat", "hat", "mat", "man", "fan",
+	# 4-letter words
+	"fish", "bird", "tree", "lake", "book", "jump", "play", "swim", "walk", "talk",
+	"blue", "pink", "cone", "ball", "kite", "wave", "sand", "wind", "rain", "snow",
+	"star", "moon", "ship", "boat", "frog", "duck", "nest", "hand", "foot", "king"
 ]
 @export var medium_words: Array[String] = [
-	"bright", "garden", "window", "planet", "forest", "silver", "simple"
+	# 5-6 letter words
+	"bright", "garden", "window", "planet", "forest", "silver", "simple",
+	"hammer", "basket", "pocket", "bottle", "carpet", "guitar", "pillow", "tunnel",
+	"rabbit", "turtle", "monkey", "dragon", "wizard", "castle", "bridge", "temple",
+	"island", "valley", "canyon", "desert", "jungle", "ocean", "stream", "harbor",
+	"winter", "summer", "spring", "autumn", "sunset", "clouds", "flower", "meadow",
+	"market", "museum", "office", "school", "circus", "palace", "prison", "chapel",
+	"anchor", "pirate", "sailor", "knight", "prince", "maiden", "jester", "farmer"
 ]
 @export var hard_words: Array[String] = [
-	"atmosphere", "background", "celebration", "dictionary", "everything"
+	# 7+ letter words
+	"atmosphere", "background", "celebration", "dictionary", "everything",
+	"adventure", "wonderful", "beautiful", "dangerous", "mysterious", "magnificent",
+	"butterfly", "dragonfly", "firefly", "caterpillar", "grasshopper", "scorpion",
+	"mountain", "waterfall", "lightning", "thunderstorm", "blizzard", "hurricane",
+	"constellation", "galaxy", "universe", "telescope", "astronomy", "asteroid",
+	"excavation", "archaeology", "civilization", "pyramid", "labyrinth", "monument",
+	"orchestra", "symphony", "harmonious", "melodious", "instrument", "performance",
+	"mysterious", "spectacular", "extraordinary", "phenomenal", "incredible",
+	"echnology", "scientific", "laboratory", "experiment", "hypothesis", "discovery",
+	"expedition", "exploration", "navigator", "cartographer", "geography", "territory"
 ]
 
 var word_dict = {
@@ -328,6 +352,7 @@ func show_player_result() -> void:
 	result_textbox_sprite.visible = true
 	result_ui.visible = true
 	continue_button.visible = true
+	is_showing_player_result = true  # Set flag so fish_turn() gets called on continue
 
 func on_continue_pressed() -> void:
 	if is_showing_player_result:
@@ -348,15 +373,20 @@ func on_continue_pressed() -> void:
 	var fish := _gd.get("current_fish") as Dictionary
 	if int(fish.get("health", 0)) <= 0:
 		add_fish_to_inventory(fish)
+		# Save current rod durability back to current_rod
 		GlobalData.current_rod["current_durability"] = GlobalData.rod_durability
+		update_rod_in_inventory()
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		SceneTransition.fade_to_scene("res://scenes/game.tscn")
 		return
 
 	if int(_gd.get("rod_durability")) <= 0:
+		# Save rod as broken
 		GlobalData.current_rod["current_durability"] = 0
+		update_rod_in_inventory()
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		SceneTransition.fade_to_scene("res://scenes/game.tscn")
+		return
 	
 	start_combat()
 
@@ -399,6 +429,50 @@ func add_fish_to_inventory(fish: Dictionary) -> void:
 		print("⚠️ Inventory full!")
 	
 	print("=== FISH ADDITION COMPLETE ===\n")
+
+func update_rod_in_inventory() -> void:
+	"""Update the fishing rod's durability in both saved inventory AND hotbar"""
+	if _gd == null:
+		return
+	
+	print("\n🔧 === UPDATING ROD IN INVENTORY ===")
+	var current_durability = GlobalData.current_rod.get("current_durability", 100)
+	var rod_name = GlobalData.current_rod.get("name", "Basic Rod")
+	
+	print("Looking for rod: ", rod_name)
+	print("Current durability to save: ", current_durability)
+	
+	var found_in_inventory = false
+	var found_in_hotbar = false
+	
+	# Search in saved_inventory_items
+	print("Searching in inventory (", _gd.saved_inventory_items.size(), " slots)...")
+	for i in range(_gd.saved_inventory_items.size()):
+		var item = _gd.saved_inventory_items[i]
+		if item != null and item is Dictionary:
+			if item.get("type") == "fishing_rod" and item.get("name") == rod_name:
+				print("  ✅ FOUND ROD IN INVENTORY SLOT ", i)
+				item["durability"] = current_durability
+				found_in_inventory = true
+				break
+	
+	# Search in saved_hotbar_items
+	print("Searching in hotbar (", _gd.saved_hotbar_items.size(), " slots)...")
+	for i in range(_gd.saved_hotbar_items.size()):
+		var item = _gd.saved_hotbar_items[i]
+		if item != null and item is Dictionary:
+			if item.get("type") == "fishing_rod" and item.get("name") == rod_name:
+				print("  ✅ FOUND ROD IN HOTBAR SLOT ", i)
+				item["durability"] = current_durability
+				found_in_hotbar = true
+				break
+	
+	if found_in_inventory or found_in_hotbar:
+		print("✅ Updated rod durability to ", current_durability, "%")
+	else:
+		print("⚠️ Rod not found in inventory or hotbar!")
+	
+	print("=== ROD UPDATE COMPLETE ===\n")
 
 func fish_turn() -> void:
 	if _gd == null:
